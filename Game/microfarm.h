@@ -2,7 +2,7 @@
 
 #define Import __declspec(dllimport)
 
-#include "win32api.h"
+#include "..\win32api.h"
 #include <stdio.h>
 #include <string.h>
 

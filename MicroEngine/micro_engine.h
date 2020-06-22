@@ -7,7 +7,7 @@
 #define MAX_ASSETS 100
 #define ASSET_KEY_LENGTH 50
 
-#include "win32api.h"
+#include "..\win32api.h"
 #include <SDL.h>
 #include <SDL_image.h>
 #include <stdio.h>
