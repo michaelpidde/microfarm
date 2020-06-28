@@ -1,0 +1,43 @@
+#pragma once
+
+/*******************************************************************************
+ * This maps is used to define common key codes for our game client and engine 
+ * so our game client doesn't need to be aware of SDL, and we can use the same 
+ * parlance between it and the engine.
+ ******************************************************************************/
+#define KEY_a 'a'
+#define KEY_b 'b'
+#define KEY_c 'c'
+#define KEY_d 'd'
+#define KEY_e 'e'
+#define KEY_f 'f'
+#define KEY_g 'g'
+#define KEY_h 'h'
+#define KEY_i 'i'
+#define KEY_j 'j'
+#define KEY_k 'k'
+#define KEY_l 'l'
+#define KEY_m 'm'
+#define KEY_n 'n'
+#define KEY_o 'o'
+#define KEY_p 'p'
+#define KEY_q 'q'
+#define KEY_r 'r'
+#define KEY_s 's'
+#define KEY_t 't'
+#define KEY_u 'u'
+#define KEY_v 'v'
+#define KEY_w 'w'
+#define KEY_x 'x'
+#define KEY_y 'y'
+#define KEY_z 'z'
+#define KEY_0 '0'
+#define KEY_1 '1'
+#define KEY_2 '2'
+#define KEY_3 '3'
+#define KEY_4 '4'
+#define KEY_5 '5'
+#define KEY_6 '6'
+#define KEY_7 '7'
+#define KEY_8 '8'
+#define KEY_9 '9'

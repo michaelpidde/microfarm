@@ -3,11 +3,30 @@
 
 static Assets _assets;
 
+
+/*******************************************************************************
+ * Module initialization.
+ * 
+ * INPUT: none
+ * 
+ * OUTPUT: none
+ ******************************************************************************/
 void init_asset_manager()
 {
     _assets.ctr = 0;
 }
 
+
+/*******************************************************************************
+ * Find character in string.
+ * 
+ * INPUT:
+ * char   -- The character to search for
+ * char * -- The string to search in
+ * 
+ * OUTPUT:
+ * int    -- The index of needle, if found, otherwise -1
+ ******************************************************************************/
 int str_find(char needle, char *haystack) {
     char * find = strrchr(haystack, needle);
     if(find != NULL) {
@@ -16,6 +35,44 @@ int str_find(char needle, char *haystack) {
     return -1;
 }
 
+/*******************************************************************************
+ * Get texture from loaded assets dictionary by unique name. This function will
+ * return a dud texture in the event that the requested asset is not found. This
+ * will visually indicate that there is a missing asset.
+ * 
+ * INPUT:
+ * char *      -- unique name of asset to look for
+ * 
+ * OUTPUT:
+ * SDL_Texture -- Asset texture
+ ******************************************************************************/
+SDL_Texture *get_asset(char *key) {
+    int pos = -1;
+    for(int i = 0; i < _assets.ctr; ++i) {
+        if(strcmp(key, _assets.index[i]) == 0) {
+            pos = i;
+        }
+    }
+
+    if(pos == -1) {
+        printf("Couldn't find texture %s\n", key);
+        // TODO: Return dud texture
+    } else {
+        return _assets.textures[pos];
+    }
+}
+
+/*******************************************************************************
+ * 
+ * 
+ * INPUT:
+ * SDL_Renderer -- Renderer stored in engine state
+ * char *       -- Directory path to load assets from
+ * char *       -- Prefix for unique keys to reference assets by
+ * 
+ * OUTPUT:
+ * int          -- Number of assets loaded
+ ******************************************************************************/
 int load_asset_class(SDL_Renderer *renderer, char *dir, char *prefix)
 {
     char *files[MAX_DIR_FILES];
@@ -40,7 +97,11 @@ int load_asset_class(SDL_Renderer *renderer, char *dir, char *prefix)
             } else {
                 _assets.textures[_assets.ctr] = SDL_CreateTextureFromSurface(renderer, loading_surface);
                 int ext_index = str_find('.', files[i]);
-                strncpy(_assets.index[_assets.ctr], files[i], ext_index);
+                char *dest = _assets.index[_assets.ctr];
+                strcat(dest, prefix);
+                strcat(dest, "_");
+                strncat(dest, files[i], ext_index);
+                // printf("Loaded %s: %s\n", dest, full_path);
                 ++_assets.ctr;
                 ++textures_loaded;
                 SDL_FreeSurface(loading_surface);

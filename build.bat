@@ -12,7 +12,7 @@ echo Compile started %TIME%
 echo.
 
 REM Build Win32API.dll
-cl /nologo /LD /FC /Zi /Fo"build\\" /Fe"build\\Win32API.dll" win32api.c
+cl /nologo /LD /FC /Zi /Fo"build\\" /Fe"build\\Win32API.dll" Common\win32api.c
 
 REM Build MicroEngine.dll - depends on Win32API.lib
 cl /nologo /LD /FC /Zi /Fo"build\\" /Fe"build\\MicroEngine.dll" MicroEngine\micro_engine.c ^
