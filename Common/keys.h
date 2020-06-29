@@ -1,9 +1,9 @@
 #pragma once
 
 /*******************************************************************************
- * This maps is used to define common key codes for our game client and engine 
- * so our game client doesn't need to be aware of SDL, and we can use the same 
- * parlance between it and the engine.
+ * This is used to define common key codes for our game client and engine 
+ * so our game client doesn't need to be aware of the engine's chosen rendering
+ * framework.
  ******************************************************************************/
 #define KEY_a 'a'
 #define KEY_b 'b'

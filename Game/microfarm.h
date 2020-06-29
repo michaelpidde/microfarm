@@ -14,11 +14,14 @@ void MCR_init();
 Import
 void MCR_set_tile_size(int size);
 Import
+void MCR_load_font(char *path, char *key);
+Import
 int MCR_load_asset_class(char *dir, char *prefix);
 Import
-void MCR_run(void (*update_callback)(), 
-             void (*keyboard_callback)(char sym, int down), 
-             void (*mouse_callback)(unsigned int button, int x, int y));
+void MCR_run(
+    void (*update_callback)(), 
+    void (*keyboard_callback)(char sym, int down), 
+    void (*mouse_callback)(uint32 button, uint32 x, uint32 y, uint32 down));
 Import
 void MCR_push_sprite(char *key, Rect rect);
 Import
@@ -27,3 +30,9 @@ Import
 void MCR_set_cursor(char *icon);
 Import
 void MRC_quit();
+
+/*
+ * UI
+ */
+Import
+void MCR_push_ui_button(unsigned int x, unsigned int y, unsigned int w, unsigned int h, char *text);

@@ -32,6 +32,11 @@ typedef struct SpriteBatch {
     int ctr;
 } SpriteBatch;
 
+typedef struct Controls {
+    int mouse_left;
+    int mouse_right;
+} Controls;
+
 typedef struct State {
     SDL_Window *window;
     SDL_Renderer *renderer;
@@ -39,4 +44,5 @@ typedef struct State {
     int running;
     SpriteBatch spritebatch;
     int tile_size;
+    Controls controls;
 } State;

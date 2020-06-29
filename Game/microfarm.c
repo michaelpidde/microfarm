@@ -70,13 +70,14 @@ void keyboard_callback(char sym, int down)
  * Primary entry point for mouse event handling.
  * 
  * INPUT:
- * unsigned int -- Left (0) or Right (1) button
- * int          -- X coordinate
- * int          -- Y coordinate
+ * uint32 -- Left (0) or Right (1) button
+ * uint32 -- X coordinate
+ * uint32 -- Y coordinate
+ * uint32 -- Boolean indication of mouse button down
  * 
  * OUTPUT: none
  ******************************************************************************/
-void mouse_callback(unsigned int button, int x, int y)
+void mouse_callback(uint32 button, uint32 x, uint32 y, uint32 down)
 {
     char b[6] = "left";
     if(button == 1) {
@@ -105,10 +106,15 @@ int main()
     // loaded = MCR_load_asset_class("assets\\icons", "icon");
     // printf("Assets loaded from icon: %d\n", loaded);
 
+    MCR_load_font("assets\\fonts\\Cabin-Regular.ttf", "body_text");
+
     init_player();
 
     // TODO: I don't like passing an image path into this since we already loaded assets. But this needs an SDL_Surface
     MCR_set_cursor("assets\\icons\\cursor.png");
+
+    // TODO: Remove this, just testing
+    MCR_push_ui_button(300, 300, 100, 25, "Test Button");
 
     MCR_run(&update_callback, &keyboard_callback, &mouse_callback);
 }

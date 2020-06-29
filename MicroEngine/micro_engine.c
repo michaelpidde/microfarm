@@ -1,5 +1,8 @@
-#include "micro_asset_manager.c"
 #include "micro_engine.h"
+
+#include "micro_asset_manager.c"
+#include "micro_font.c"
+#include "micro_ui.c"
 
 State _state;
 
@@ -11,7 +14,7 @@ State _state;
  * State * -- Primary engine state
  * 
  * OUTPUT:
- * int -- Boolean success flag
+ * int     -- Boolean success flag
  ******************************************************************************/
 int init_window(State *state)
 {
@@ -26,9 +29,8 @@ int init_window(State *state)
             SDL_WINDOWPOS_UNDEFINED,
             800,
             600,
-            SDL_WINDOW_FULLSCREEN_DESKTOP
+            0 // SDL_WINDOW_FULLSCREEN_DESKTOP
         );
-
         if(state->window == NULL) {
             printf("Failed to create game window. Error: %s\n", SDL_GetError());
             success = 0;
@@ -59,6 +61,7 @@ void MCR_init()
 {
     init_window(&_state);
     init_asset_manager(&_state);
+    init_UI();
     _state.spritebatch.ctr = 0;
     _state.tile_size = DEFAULT_TILE_SIZE;
 }
@@ -97,7 +100,23 @@ int MCR_load_asset_class(char *dir, char *prefix)
 
 
 /*******************************************************************************
- * Primary render method. Clear to black, then loop sprite batch and render
+ * Proxy to font loader.
+ * 
+ * INPUT:
+ * char * -- Path to font file
+ * char * -- Unique key
+ * 
+ * OUTPUT: none
+ ******************************************************************************/
+Export
+void MCR_load_font(char *path, char *key)
+{
+    load_font(path, key);
+}
+
+
+/*******************************************************************************
+ * Sprite batch rendering. Clear to black, then loop sprite batch and render
  * each item.
  * 
  * INPUT: none
@@ -122,13 +141,36 @@ void render_spritebatch()
         dest.h = _state.spritebatch.locations[i].h;
         SDL_RenderCopy(_state.renderer, get_asset(_state.spritebatch.keys[i]), &src, &dest);
     }
-
-    SDL_RenderPresent(_state.renderer);
 }
 
+
+/*******************************************************************************
+ * Resets sprite batch. Batch arrays are not cleared, just reset the counter
+ * to overrite array positions.
+ * 
+ * INPUT: none
+ * 
+ * OUTPUT: none
+ ******************************************************************************/
 void clear_sprite_batch()
 {
     _state.spritebatch.ctr = 0;
+}
+
+
+/*******************************************************************************
+ * Main rendering entry point. Renders elements in proper order.
+ * 
+ * INPUT: none
+ * 
+ * OUTPUT: none
+ ******************************************************************************/
+void render()
+{
+    render_spritebatch();
+    clear_sprite_batch();
+    render_ui(_state.renderer);
+    SDL_RenderPresent(_state.renderer);
 }
 
 
@@ -197,6 +239,24 @@ void MCR_set_cursor(char *image)
 
 
 /*******************************************************************************
+ * Proxy to add UI button
+ * 
+ * INPUT:
+ * unsigned int -- X position
+ * unsigned int -- Y position
+ * unsigned int -- Button width
+ * unsigned int -- Button height
+ * char *       -- Button text
+ * 
+ * OUTPUT: none
+ ******************************************************************************/
+Export
+void MCR_push_ui_button(unsigned int x, unsigned int y, unsigned int w, unsigned int h, char *text) {
+    create_button(x, y, w, h, text);
+}
+
+
+/*******************************************************************************
  * Primary entry point for input device event handling.
  * 
  * INPUT:
@@ -206,9 +266,10 @@ void MCR_set_cursor(char *image)
  * 
  * OUTPUT: none
  ******************************************************************************/
-void handle_events(SDL_Event event, 
-                   void (*keyboard_callback)(char sym, int down),
-                   void (*mouse_callback)(unsigned int button, int x, int y))
+void handle_events(
+    SDL_Event event, 
+    void (*keyboard_callback)(char sym, int down),
+    void (*mouse_callback)(uint32 button, uint32 x, uint32 y, uint32 down))
 {
     while(SDL_PollEvent(&event)) {
         switch(event.type) {
@@ -222,12 +283,31 @@ void handle_events(SDL_Event event,
                 keyboard_callback(event.key.keysym.sym, 1);
             } break;
             case SDL_MOUSEBUTTONDOWN: {
-                unsigned int button = 0;
+                uint32 button = 0;
                 if(event.button.button == SDL_BUTTON_RIGHT) {
                     button = 1;
                 }
-                mouse_callback(button, event.button.x, event.button.y);
-            }
+
+                if(button == 1) {
+                    _state.controls.mouse_right = 1;
+                } else {
+                    _state.controls.mouse_left = 1;
+                }
+
+                mouse_callback(button, event.button.x, event.button.y, 1);
+            } break;
+            case SDL_MOUSEBUTTONUP: {
+                uint32 button = 0;
+                if(event.button.button == SDL_BUTTON_RIGHT) {
+                    button = 1;
+                }
+
+                if(button == 1) {
+                    _state.controls.mouse_right = 0;
+                } else {
+                    _state.controls.mouse_left = 0;
+                }
+            } break;
         }
     }
 }
@@ -248,6 +328,21 @@ void MRC_quit()
 
 
 /*******************************************************************************
+ * Main entry for subsystem updates.
+ * 
+ * INPUT:
+ * void * -- Callback function to client update process
+ * 
+ * OUTPUT: none
+ ******************************************************************************/
+void update(void (*update_callback)())
+{
+    update_ui(&_state);
+    update_callback();
+}
+
+
+/*******************************************************************************
  * Main entry point into engine.
  * 
  * INPUT:
@@ -257,18 +352,18 @@ void MRC_quit()
  * OUTPUT: none
  ******************************************************************************/
 Export
-void MCR_run(void (*update_callback)(), 
-             void (*keyboard_callback)(char sym, int down), 
-             void (*mouse_callback)(unsigned int button, int x, int y)) 
+void MCR_run(
+    void (*update_callback)(), 
+    void (*keyboard_callback)(char sym, int down), 
+    void (*mouse_callback)(uint32 button, uint32 x, uint32 y, uint32 down)) 
 {
     _state.running = 1;
 
     SDL_Event event;
     while(_state.running) {
         handle_events(event, keyboard_callback, mouse_callback);
-        update_callback();
-        render_spritebatch();
-        clear_sprite_batch();
+        update(update_callback);
+        render();
     }
 
     SDL_DestroyRenderer(_state.renderer);

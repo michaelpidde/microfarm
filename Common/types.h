@@ -1,5 +1,7 @@
 #pragma once
 
+#define uint32 unsigned int
+
 typedef struct Point {
     float x;
     float y;
