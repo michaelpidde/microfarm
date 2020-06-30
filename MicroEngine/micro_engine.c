@@ -61,6 +61,7 @@ void MCR_init()
 {
     init_window(&_state);
     init_asset_manager(&_state);
+    init_font();
     init_UI();
     _state.spritebatch.ctr = 0;
     _state.tile_size = DEFAULT_TILE_SIZE;
@@ -251,7 +252,7 @@ void MCR_set_cursor(char *image)
  * OUTPUT: none
  ******************************************************************************/
 Export
-void MCR_push_ui_button(unsigned int x, unsigned int y, unsigned int w, unsigned int h, char *text) {
+void MCR_push_ui_button(uint32 x, uint32 y, uint32 w, uint32 h, char *text) {
     create_button(x, y, w, h, text);
 }
 
@@ -369,6 +370,7 @@ void MCR_run(
     SDL_DestroyRenderer(_state.renderer);
     SDL_DestroyWindow(_state.window);
     SDL_FreeCursor(_state.cursor);
+    TTF_Quit();
     // TODO: Free assets
     SDL_Quit();
 }

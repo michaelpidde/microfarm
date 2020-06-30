@@ -49,3 +49,28 @@ void load_font(char *path, char *key)
         printf("Max fonts already loaded.\n");
     }
 }
+
+char *get_font_path(char *key)
+{
+    char *path = "";
+    for(int i = 0; i < TOTAL_FONTS; ++i) {
+        if(strcmp(_fonts.keys[i], key) == 0) {
+            return _fonts.paths[i];
+        }
+    }
+    return path;
+}
+
+SDL_Texture *get_text_texture(SDL_Renderer *renderer, char *key, char *text, int size)
+{
+    TTF_Font *font = TTF_OpenFont(get_font_path(key), size);
+    if(!font) {
+        printf("Text render error: %s\n", TTF_GetError());
+    }
+    SDL_Color color = {0, 0, 0};
+    SDL_Surface *surface = TTF_RenderText_Blended(font, text, color);
+    SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
+    SDL_FreeSurface(surface);
+    TTF_CloseFont(font);
+    return texture;
+}

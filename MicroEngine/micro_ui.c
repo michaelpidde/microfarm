@@ -11,21 +11,40 @@ typedef struct ButtonStyle {
     RGBColor hover_color;
     RGBColor click_color;
     RGBColor border_color;
-    unsigned int border_size;
+    uint32 border_size;
+    uint32 padding;
     int text_alignment;
 } ButtonStyle;
 
+/*******************************************************************************
+ * Off: State when mouse is not touching element.
+ * 
+ * Hover: State when mouse is over element.
+ * 
+ * Click: State when mouse is over element and mouse button is clicked.
+ ******************************************************************************/
 typedef enum ElementState {
     Off, Hover, Click
 } ElementState;
 
+/*******************************************************************************
+ * Adaptive: Uses element width and height as starting values but will expand to
+ * accommodate inner content size.
+ * 
+ * Strict: Uses element width and height verbatim and will clip inner content to
+ * maintain static dimensions.
+ ******************************************************************************/
+typedef enum RenderStyle {
+    Adaptive, Strict
+} RenderStyle;
+
 #define MAX_BUTTON_TEXT 50
 typedef struct Button {
     char text[MAX_BUTTON_TEXT];
-    unsigned int x;
-    unsigned int y;
-    unsigned int w;
-    unsigned int h;
+    uint32 x;
+    uint32 y;
+    uint32 w;
+    uint32 h;
     ButtonStyle style;
     ElementState state;
 } Button;
@@ -33,7 +52,8 @@ typedef struct Button {
 #define MAX_BUTTONS 20
 typedef struct UI_State {
     Button buttons[MAX_BUTTONS];
-    unsigned int button_ctr;
+    uint32 button_ctr;
+    RenderStyle render_style;
 } UI_State;
 
 
@@ -50,6 +70,7 @@ UI_State _ui_state;
 void init_UI()
 {
     _ui_state.button_ctr = 0;
+    _ui_state.render_style = Adaptive;
 }
 
 
@@ -73,7 +94,8 @@ ButtonStyle get_default_button_style()
     bs.click_color = click;
     bs.border_color = border;
     bs.border_size = 2;
-    bs.text_alignment = 0;
+    bs.padding = 4;
+    bs.text_alignment = -1;
     return bs;
 }
 
@@ -90,7 +112,7 @@ ButtonStyle get_default_button_style()
  * 
  * OUTPUT: none
  ******************************************************************************/
-void create_button(unsigned int x, unsigned int y, unsigned int w, unsigned int h, char *text)
+void create_button(uint32 x, uint32 y, uint32 w, uint32 h, char *text)
 {
     if(_ui_state.button_ctr < MAX_BUTTONS) {
         Button b;
@@ -122,11 +144,30 @@ void render_ui(SDL_Renderer *renderer)
     SDL_Rect rect;
     for(int i = 0; i < _ui_state.button_ctr; ++i) {
         Button *button = &_ui_state.buttons[i];
+
+        // Get texture representation of text first so we can use its dimensions for calculations.
+        SDL_Texture *text_texture = get_text_texture(
+            renderer,
+            "body_text",
+            button->text,
+            18
+        );
+
+        int text_width, text_height;
+        int qt = SDL_QueryTexture(text_texture, NULL, NULL, &text_width, &text_height);
+
+        int max_width = button->w + (button->style.border_size * 2);
+        int max_height = button->h + (button->style.border_size * 2);
+        if(_ui_state.render_style == Adaptive) {
+            max_width = text_width + (button->style.border_size * 2) + (button->style.padding * 2);
+            max_height = text_height + (button->style.border_size * 2) + (button->style.padding * 2);
+        }
+
         // Border
         rect.x = button->x;
-        rect.y = button->x;
-        rect.w = button->w + (button->style.border_size * 2);
-        rect.h = button->h + (button->style.border_size * 2);
+        rect.y = button->y;
+        rect.w = max_width;
+        rect.h = max_height;
         SDL_SetRenderDrawColor(
             renderer,
             button->style.border_color.r,
@@ -139,8 +180,8 @@ void render_ui(SDL_Renderer *renderer)
         // Body
         rect.x = button->x + button->style.border_size;
         rect.y = button->y + button->style.border_size;
-        rect.w = button->w;
-        rect.h = button->h;
+        rect.w = max_width - (button->style.border_size * 2);
+        rect.h = max_height - (button->style.border_size * 2);
         RGBColor *state_color = &button->style.base_color;
         switch(button->state) {
             case Hover: {
@@ -158,6 +199,21 @@ void render_ui(SDL_Renderer *renderer)
             255
         );
         SDL_RenderFillRect(renderer, &rect);
+
+        // TODO: Handle clipping for Strict RenderStyle
+        // Text
+        SDL_Rect src;
+        src.x = 0;
+        src.y = 0;
+        src.h = text_height;
+        src.w = text_width;
+        SDL_Rect dest;
+        dest.x = button->x + button->style.border_size + button->style.padding;
+        dest.y = button->y + button->style.border_size + button->style.padding;
+        dest.h = text_height;
+        dest.w = text_width;
+        SDL_RenderCopy(renderer, text_texture, &src, &dest);
+        SDL_DestroyTexture(text_texture);
     }
 }
 
@@ -180,7 +236,15 @@ void update_ui(State *gamestate)
      */
     for(int i = 0; i < MAX_BUTTONS; ++i) {
         Button *b = &_ui_state.buttons[i];
-        // Left, Right, Top, Bottom
+        int left = b->x;
+        int right = b->x + b->w + (b->style.border_size * 2);
+        int top = b->y;
+        int bottom = b->y + b->h + (b->style.border_size * 2);
+        if(_ui_state.render_style == Adaptive) {
+            // TODO: Figure out a way to store real size. Maybe store SDL_Texture from get_text_texture somewhere
+            // so we don't need to rebuilt it every frame, then we can query its dimensions and get the ultimate
+            // button size. Set up a function to get that data since we make that calculation in render right now.
+        }
         if(mouse_x >= b->x &&
            mouse_x <= (b->x + b->w + (b->style.border_size * 2)) &&
            mouse_y >= (b->y) &&

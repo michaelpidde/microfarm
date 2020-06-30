@@ -35,4 +35,4 @@ void MRC_quit();
  * UI
  */
 Import
-void MCR_push_ui_button(unsigned int x, unsigned int y, unsigned int w, unsigned int h, char *text);
+void MCR_push_ui_button(uint32 x, uint32 y, uint32 w, uint32 h, char *text);
