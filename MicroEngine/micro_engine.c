@@ -75,7 +75,6 @@ void MCR_init()
  * 
  * OUTPUT: none
  ******************************************************************************/
-Export
 void MCR_set_tile_size(int size)
 {
     _state.tile_size = size;
@@ -92,7 +91,6 @@ void MCR_set_tile_size(int size)
  * OUTPUT:
  * int    -- Number of assets loaded
  ******************************************************************************/
-Export
 int MCR_load_asset_class(char *dir, char *prefix)
 {
     return load_asset_class(_state.renderer, dir, prefix);
@@ -172,7 +170,6 @@ void render()
  * 
  * OUTPUT: none
  ******************************************************************************/
-Export
 void MCR_push_sprite(char *key, Rect rect)
 {
     if(_state.spritebatch.ctr < MAX_DRAW_BATCH) {
@@ -194,7 +191,6 @@ void MCR_push_sprite(char *key, Rect rect)
  * 
  * OUTPUT: none
  ******************************************************************************/
-Export
 void MCR_get_output_tiles(int *dimensions)
 {
     SDL_GetRendererOutputSize(_state.renderer, &dimensions[0], &dimensions[1]);
@@ -212,7 +208,6 @@ void MCR_get_output_tiles(int *dimensions)
  * 
  * OUTPUT: none
  ******************************************************************************/
-Export
 void MCR_set_cursor(char *image)
 {
     SDL_Surface *loading_surface;
@@ -239,7 +234,6 @@ void MCR_set_cursor(char *image)
  * 
  * OUTPUT: none
  ******************************************************************************/
-Export
 void MCR_push_ui_button(uint32 x, uint32 y, uint32 w, uint32 h, char *text) {
     create_button(x, y, w, h, text);
 }
@@ -309,7 +303,6 @@ void handle_events(
  * 
  * OUTPUT: none
  ******************************************************************************/
-Export
 void MRC_quit()
 {
     _state.running = 0;
@@ -340,7 +333,6 @@ void update(void (*update_callback)())
  * 
  * OUTPUT: none
  ******************************************************************************/
-Export
 void MCR_run(
     void (*update_callback)(), 
     void (*keyboard_callback)(char sym, int down), 
