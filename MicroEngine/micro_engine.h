@@ -1,7 +1,6 @@
 #pragma once
 
-#define Import __declspec(dllimport)
-#define Export __declspec(dllexport)
+#include "MCR_API.h"
 
 // ASSETS
 #define MAX_ASSETS 100

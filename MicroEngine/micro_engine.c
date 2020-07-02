@@ -56,7 +56,6 @@ int init_window(State *state)
  * 
  * OUTPUT: none
  ******************************************************************************/
-Export
 void MCR_init()
 {
     init_window(&_state);
