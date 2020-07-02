@@ -2,12 +2,12 @@
 
 mkdir build
 xcopy /E /D /I /Y Game\assets build\assets
+REM TODO: ONLY COPY THESE ON NON-RELEASE BUILD...
+xcopy /E /D /I /Y MicroEngine\assets build\assets
 xcopy /Y /D MicroEngine\_libs\SDL2-2.0.8\lib\x86\SDL2.dll build
 xcopy /Y /D MicroEngine\_libs\SDL2_image-2.0.3\lib\x86\SDL2_image.dll build
 xcopy /Y /D MicroEngine\_libs\SDL2_image-2.0.3\lib\x86\libpng16-16.dll build
 xcopy /Y /D MicroEngine\_libs\SDL2_image-2.0.3\lib\x86\zlib1.dll build
-xcopy /Y /D MicroEngine\_libs\SDL2_ttf-2.0.15\libfreetype-6.dll build
-xcopy /Y /D MicroEngine\_libs\SDL2_ttf-2.0.15\SDL2_ttf.dll build
 
 echo.
 echo Compile started %TIME%
@@ -20,13 +20,11 @@ REM Build MicroEngine.dll - depends on Win32API.lib
 cl /nologo /LD /FC /Zi /Fo"build\\" /Fe"build\\MicroEngine.dll" MicroEngine\micro_engine.c ^
 /I MicroEngine\_libs\SDL2-2.0.8\include ^
 /I MicroEngine\_libs\SDL2_image-2.0.3\include ^
-/I MicroEngine\_libs\SDL2_ttf-2.0.15\include ^
 /link /NOLOGO /out:build\MicroEngine.dll ^
 /LIBPATH:MicroEngine\_libs\SDL2-2.0.8\lib\x86 ^
 /LIBPATH:MicroEngine\_libs\SDL2_image-2.0.3\lib\x86 ^
-/LIBPATH:MicroEngine\_libs\SDL2_ttf-2.0.15\lib\x86 ^
 /LIBPATH:build ^
-SDL2.lib SDL2main.lib SDL2_image.lib SDL2_ttf.lib Win32API.lib
+SDL2.lib SDL2main.lib SDL2_image.lib Win32API.lib
 
 REM Build microfarm.exe
 REM Depends on MicroEngine.lib

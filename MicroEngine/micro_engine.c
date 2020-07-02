@@ -1,8 +1,8 @@
 #include "micro_engine.h"
 
 #include "micro_asset_manager.c"
-#include "micro_font.c"
-#include "micro_ui.c"
+#include "micro_font_manager.c"
+#include "micro_ui_manager.c"
 
 State _state;
 
@@ -61,7 +61,7 @@ void MCR_init()
 {
     init_window(&_state);
     init_asset_manager(&_state);
-    init_font();
+    init_font(_state.renderer);
     init_UI();
     _state.spritebatch.ctr = 0;
     _state.tile_size = DEFAULT_TILE_SIZE;
@@ -97,22 +97,6 @@ Export
 int MCR_load_asset_class(char *dir, char *prefix)
 {
     return load_asset_class(_state.renderer, dir, prefix);
-}
-
-
-/*******************************************************************************
- * Proxy to font loader.
- * 
- * INPUT:
- * char * -- Path to font file
- * char * -- Unique key
- * 
- * OUTPUT: none
- ******************************************************************************/
-Export
-void MCR_load_font(char *path, char *key)
-{
-    load_font(path, key);
 }
 
 
@@ -171,6 +155,11 @@ void render()
     render_spritebatch();
     clear_sprite_batch();
     render_ui(_state.renderer);
+
+    set_font("font_cabin_20_black");
+	char *string = "This is a string.";
+	render_word(_state.renderer, string, 305, 305);
+
     SDL_RenderPresent(_state.renderer);
 }
 
@@ -370,7 +359,6 @@ void MCR_run(
     SDL_DestroyRenderer(_state.renderer);
     SDL_DestroyWindow(_state.window);
     SDL_FreeCursor(_state.cursor);
-    TTF_Quit();
     // TODO: Free assets
     SDL_Quit();
 }

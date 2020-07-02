@@ -14,8 +14,6 @@ void MCR_init();
 Import
 void MCR_set_tile_size(int size);
 Import
-void MCR_load_font(char *path, char *key);
-Import
 int MCR_load_asset_class(char *dir, char *prefix);
 Import
 void MCR_run(

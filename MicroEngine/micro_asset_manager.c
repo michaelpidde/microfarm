@@ -35,6 +35,7 @@ int str_find(char needle, char *haystack) {
     return -1;
 }
 
+
 /*******************************************************************************
  * Get texture from loaded assets dictionary by unique name. This function will
  * return a dud texture in the event that the requested asset is not found. This
@@ -61,6 +62,7 @@ SDL_Texture *get_asset(char *key) {
         return _assets.textures[pos];
     }
 }
+
 
 /*******************************************************************************
  * 
@@ -116,6 +118,7 @@ int load_asset_class(SDL_Renderer *renderer, char *dir, char *prefix)
 
     return textures_loaded;
 }
+
 
 void free_assets()
 {

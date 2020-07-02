@@ -145,16 +145,9 @@ void render_ui(SDL_Renderer *renderer)
     for(int i = 0; i < _ui_state.button_ctr; ++i) {
         Button *button = &_ui_state.buttons[i];
 
-        // Get texture representation of text first so we can use its dimensions for calculations.
-        SDL_Texture *text_texture = get_text_texture(
-            renderer,
-            "body_text",
-            button->text,
-            18
-        );
-
-        int text_width, text_height;
-        int qt = SDL_QueryTexture(text_texture, NULL, NULL, &text_width, &text_height);
+        // TODO: Calculate these
+        int text_width = 100;
+        int text_height = 30;
 
         int max_width = button->w + (button->style.border_size * 2);
         int max_height = button->h + (button->style.border_size * 2);
@@ -212,8 +205,7 @@ void render_ui(SDL_Renderer *renderer)
         dest.y = button->y + button->style.border_size + button->style.padding;
         dest.h = text_height;
         dest.w = text_width;
-        SDL_RenderCopy(renderer, text_texture, &src, &dest);
-        SDL_DestroyTexture(text_texture);
+        // SDL_RenderCopy(renderer, text_texture, &src, &dest);
     }
 }
 
@@ -242,7 +234,7 @@ void update_ui(State *gamestate)
         int bottom = b->y + b->h + (b->style.border_size * 2);
         if(_ui_state.render_style == Adaptive) {
             // TODO: Figure out a way to store real size. Maybe store SDL_Texture from get_text_texture somewhere
-            // so we don't need to rebuilt it every frame, then we can query its dimensions and get the ultimate
+            // so we don't need to rebuild it every frame, then we can query its dimensions and get the ultimate
             // button size. Set up a function to get that data since we make that calculation in render right now.
         }
         if(mouse_x >= b->x &&

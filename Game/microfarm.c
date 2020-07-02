@@ -106,15 +106,13 @@ int main()
     // loaded = MCR_load_asset_class("assets\\icons", "icon");
     // printf("Assets loaded from icon: %d\n", loaded);
 
-    MCR_load_font("assets\\fonts\\Cabin-Regular.ttf", "body_text");
-
     init_player();
 
     // TODO: I don't like passing an image path into this since we already loaded assets. But this needs an SDL_Surface
     MCR_set_cursor("assets\\icons\\cursor.png");
 
     // TODO: Remove this, just testing
-    MCR_push_ui_button(300, 300, 100, 25, "Test Button");
+    MCR_push_ui_button(300, 300, 100, 25, "Test\nButton");
 
     MCR_run(&update_callback, &keyboard_callback, &mouse_callback);
 }
