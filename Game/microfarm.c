@@ -87,10 +87,6 @@ void mouse_callback(uint32 button, uint32 x, uint32 y, uint32 down)
 }
 
 
-void do_stupid_stuff()
-{
-    printf("Stupid stuff\n");
-}
 /*******************************************************************************
  * Main entry to game client
  * 
@@ -125,7 +121,11 @@ int main()
         MCR_get_button_dimensions("btn_test2", &width, &height);
         x += width + 10;
         MCR_push_ui_button(x, y, 0, 0, "btn_test3", "Beep");
-        MCR_register_button_callback("btn_test2", do_stupid_stuff);
+        MCR_register_button_callback("btn_test2", ({
+            void callback() {
+                printf("Stupid stuff.\n");
+            } callback;
+        }));
     }
 
     MCR_run(&update_callback, &keyboard_callback, &mouse_callback);
