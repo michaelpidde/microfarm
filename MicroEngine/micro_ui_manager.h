@@ -51,6 +51,8 @@ typedef struct Button {
     char id[KEY_LENGTH];
     ButtonStyle style;
     ElementState state;
+    int doing_callback;
+    void (*callback)();
 } Button;
 
 #define MAX_BUTTONS 20

@@ -246,6 +246,13 @@ void MCR_get_button_dimensions(char *id, int *max_width, int *max_height)
 }
 
 
+void MCR_register_button_callback(char *id, void (*callback)())
+{
+    Button *button = get_button_by_id(id);
+    register_button_callback(button, callback);
+}
+
+
 /*******************************************************************************
  * Primary entry point for input device event handling.
  * 

@@ -69,6 +69,7 @@ void create_button(uint32 x, uint32 y, uint32 w, uint32 h, char *id, char *text)
         b.state = Off;
         strncpy(b.id, id, KEY_LENGTH);
         strncpy(b.text, text, MAX_BUTTON_TEXT);
+        b.callback = NULL;
         _ui_state.buttons[_ui_state.button_ctr] = b;
         ++_ui_state.button_ctr;
     }
@@ -122,6 +123,12 @@ Button *get_button_by_id(char *id)
         }
     }
     // TODO: Figure out what to do if this doesn't return in the loop.
+}
+
+
+void register_button_callback(Button *button, void (*callback)())
+{
+    button->callback = callback;
 }
 
 
@@ -230,8 +237,13 @@ void update_ui(State *gamestate)
         {
             if(gamestate->controls.mouse_left == 1) {
                 b->state = Click;
+                if(b->callback && !b->doing_callback) {
+                    b->doing_callback = 1;
+                    b->callback();
+                }
             } else {
                 b->state = Hover;
+                b->doing_callback = 0;
             }
         } else {
             b->state = Off;
