@@ -35,8 +35,7 @@ gcc -std=c99 -shared -o build\MicroEngine.dll build\micro_engine.o ^
 REM Build microfarm.exe
 REM Depends on MicroEngine.lib
 gcc -std=c99 -c Game\microfarm.c -o build\microfarm.o
-gcc -std=c99 -o build\microfarm.exe build\microfarm.o ^
--Lbuild -lMicroEngine
+gcc -std=c99 -o build\microfarm.exe build\microfarm.o -Lbuild -lMicroEngine
 
 echo.
 echo Compile finished %TIME%
