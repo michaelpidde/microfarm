@@ -153,11 +153,6 @@ void render()
     render_spritebatch();
     clear_sprite_batch();
     render_ui(_state.renderer);
-
-    set_font("font_cabin_20_black");
-	char *string = "This is a string.";
-	render_word(_state.renderer, string, 305, 305);
-
     SDL_RenderPresent(_state.renderer);
 }
 
@@ -226,17 +221,28 @@ void MCR_set_cursor(char *image)
 /*******************************************************************************
  * Proxy to add UI button
  * 
+ * See micro_ui_manager::push_ui_button
+ ******************************************************************************/
+void MCR_push_ui_button(uint32 x, uint32 y, uint32 w, uint32 h, char *id, char *text)
+{
+    create_button(x, y, w, h, id, text);
+}
+
+
+/*******************************************************************************
+ * Proxy to get button dimensions.
+ * 
  * INPUT:
- * unsigned int -- X position
- * unsigned int -- Y position
- * unsigned int -- Button width
- * unsigned int -- Button height
- * char *       -- Button text
+ * char * -- ID of button
+ * int *  -- Max render width to write back to
+ * int *  -- Max render height to write back to
  * 
  * OUTPUT: none
  ******************************************************************************/
-void MCR_push_ui_button(uint32 x, uint32 y, uint32 w, uint32 h, char *text) {
-    create_button(x, y, w, h, text);
+void MCR_get_button_dimensions(char *id, int *max_width, int *max_height)
+{
+    Button *button = get_button_by_id(id);
+    get_button_dimensions(button, max_width, max_height);
 }
 
 

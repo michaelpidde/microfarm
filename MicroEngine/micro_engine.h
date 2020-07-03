@@ -1,10 +1,7 @@
 #pragma once
 
+#include "constants.h"
 #include "MCR_API.h"
-
-// ASSETS
-#define MAX_ASSETS 100
-#define ASSET_KEY_LENGTH 50
 
 #include "..\Common\win32api.h"
 #include "..\Common\types.h"
@@ -27,7 +24,7 @@ Import
 __int64 win32_query_performance_counter();
 
 typedef struct SpriteBatch {
-    char keys[MAX_DRAW_BATCH][ASSET_KEY_LENGTH];
+    char keys[MAX_DRAW_BATCH][KEY_LENGTH];
     Rect locations[MAX_DRAW_BATCH];
     int ctr;
 } SpriteBatch;

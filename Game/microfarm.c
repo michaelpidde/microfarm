@@ -110,7 +110,18 @@ int main()
     MCR_set_cursor("assets\\icons\\cursor.png");
 
     // TODO: Remove this, just testing
-    MCR_push_ui_button(300, 300, 100, 25, "Test\nButton");
+    {
+        int x = 300;
+        int y = 300;
+        int width, height;
+        MCR_push_ui_button(x, y, 0, 0, "btn_test", "Test Button");
+        MCR_get_button_dimensions("btn_test", &width, &height);
+        x += width + 10;
+        MCR_push_ui_button(x, y, 0, 0, "btn_test2", "Another Button");
+        MCR_get_button_dimensions("btn_test2", &width, &height);
+        x += width + 10;
+        MCR_push_ui_button(x, y, 0, 0, "btn_test3", "Beep");
+    }
 
     MCR_run(&update_callback, &keyboard_callback, &mouse_callback);
 }

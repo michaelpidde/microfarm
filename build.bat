@@ -11,7 +11,6 @@ xcopy /Y /D MicroEngine\_libs\SDL2_image-2.0.3\lib\x86\zlib1.dll build
 
 echo.
 echo Compile started %TIME%
-echo.
 
 
 REM Build Win32API.dll
@@ -37,6 +36,5 @@ REM Depends on MicroEngine.lib
 gcc -std=c99 -c Game\microfarm.c -o build\microfarm.o
 gcc -std=c99 -o build\microfarm.exe build\microfarm.o -Lbuild -lMicroEngine
 
-echo.
 echo Compile finished %TIME%
 echo.

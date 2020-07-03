@@ -1,4 +1,3 @@
-#include "micro_engine.h"
 #include "micro_font_manager.h"
 #include "fonts/cabin_20_black.h"
 
@@ -14,7 +13,7 @@ typedef struct FontState {
 
 typedef struct Fonts {
 	FontState font_state[TOTAL_FONTS];
-	char keys[TOTAL_FONTS][ASSET_KEY_LENGTH];
+	char keys[TOTAL_FONTS][KEY_LENGTH];
 	int ctr;
 } Fonts;
 

@@ -34,5 +34,8 @@ void MRC_quit();
 /*
  * UI
  */
+#include "micro_ui_manager.h"
 ImEx
-void MCR_push_ui_button(uint32 x, uint32 y, uint32 w, uint32 h, char *text);
+void MCR_push_ui_button(uint32 x, uint32 y, uint32 w, uint32 h, char *id, char *text);
+ImEx
+void MCR_get_button_dimensions(char *id, int *max_width, int *max_height);
