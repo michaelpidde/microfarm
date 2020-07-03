@@ -1,4 +1,5 @@
 #include "micro_engine.h"
+#include "micro_font_manager.h"
 #include "fonts/cabin_20_black.h"
 
 #define TOTAL_FONTS 10

@@ -1,3 +1,5 @@
+#pragma once
+
 #define DEBUG_STYLE_BOLD (1 << 0)
 #define DEBUG_STYLE_UNDERLINE (1 << 1)
 #define DEBUG_STYLE_NEGATIVE (1 << 2)

@@ -13,25 +13,30 @@ echo.
 echo Compile started %TIME%
 echo.
 
+
 REM Build Win32API.dll
-cl /nologo /LD /FC /Zi /Fo"build\\" /Fe"build\\Win32API.dll" Common\win32api.c
+gcc -std=c99 -c Common\win32api.c -o build\win32api.o
+gcc -std=c99 -shared -o build\Win32API.dll build\win32api.o -Wl,--out-implib,build\Win32API.lib
+
 
 REM Build MicroEngine.dll - depends on Win32API.lib
-cl /nologo /LD /FC /Zi /Fo"build\\" /Fe"build\\MicroEngine.dll" MicroEngine\micro_engine.c ^
-/I MicroEngine\_libs\SDL2-2.0.8\include ^
-/I MicroEngine\_libs\SDL2_image-2.0.3\include ^
-/link /NOLOGO /out:build\MicroEngine.dll ^
-/LIBPATH:MicroEngine\_libs\SDL2-2.0.8\lib\x86 ^
-/LIBPATH:MicroEngine\_libs\SDL2_image-2.0.3\lib\x86 ^
-/LIBPATH:build ^
-SDL2.lib SDL2main.lib SDL2_image.lib Win32API.lib
+gcc -std=c99 -c MicroEngine\micro_engine.c -o build\micro_engine.o ^
+-IMicroEngine\_libs\SDL2-2.0.8\include ^
+-IMicroEngine\_libs\SDL2_image-2.0.3\include
+
+gcc -std=c99 -shared -o build\MicroEngine.dll build\micro_engine.o ^
+-LMicroEngine\_libs\SDL2-2.0.8\lib\x86 ^
+-LMicroEngine\_libs\SDL2_image-2.0.3\lib\x86 ^
+-Lbuild\ ^
+-lSDL2 -lSDL2main -lSDL2_image -lWin32API ^
+-Wl,--out-implib,build\MicroEngine.lib
+
 
 REM Build microfarm.exe
 REM Depends on MicroEngine.lib
-cl /nologo /Zi /FC /Fo"build\\" /Fe"build\\microfarm.exe" Game\microfarm.c ^
-/link /NOLOGO /out:build\microfarm.exe ^
-/LIBPATH:build ^
-MicroEngine.lib
+gcc -std=c99 -c Game\microfarm.c -o build\microfarm.o
+gcc -std=c99 -o build\microfarm.exe build\microfarm.o ^
+-Lbuild -lMicroEngine
 
 echo.
 echo Compile finished %TIME%
