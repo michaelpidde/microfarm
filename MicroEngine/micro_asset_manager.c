@@ -56,7 +56,9 @@ SDL_Texture *get_asset(char *key) {
     }
 
     if(pos == -1) {
-        printf("Couldn't find texture %s\n", key);
+        char buffer[50];
+        sprintf(buffer, "Couldn't find texture %s\n", key);
+        error(buffer);
         // TODO: Return dud texture
     } else {
         return _assets.textures[pos];
@@ -82,7 +84,9 @@ int load_asset_class(SDL_Renderer *renderer, char *dir, char *prefix)
     int textures_loaded = 0;
 
     if(file_ctr < 0) {
-        printf("Error loading asset class %s\n", prefix);
+        char buffer[50];
+        sprintf(buffer, "Error loading asset class %s\n", prefix);
+        error(buffer);
         return 0;
     }
 
@@ -95,7 +99,9 @@ int load_asset_class(SDL_Renderer *renderer, char *dir, char *prefix)
             loading_surface = IMG_Load(full_path);
 
             if(loading_surface == NULL) {
-                printf("Failed to load texture %s. Error: %s\n", full_path, IMG_GetError());
+                char buffer[100];
+                sprintf(buffer, "Failed to load texture %s. Error: %s\n", full_path, IMG_GetError());
+                error(buffer);
             } else {
                 _assets.textures[_assets.ctr] = SDL_CreateTextureFromSurface(renderer, loading_surface);
                 int ext_index = str_find('.', files[i]);
@@ -110,11 +116,17 @@ int load_asset_class(SDL_Renderer *renderer, char *dir, char *prefix)
             }
         } else {
             // TODO: Do something better here
-            printf("Loaded max assets\n");
+            error("Loaded max assets");
         }
     }
 
     win32_free_directory_list(files, file_ctr);
+
+    #if DEBUG
+        char buffer[100];
+        sprintf(buffer, "Loaded %d texture(s) from %s", textures_loaded, dir);
+        debug_string(buffer, Green, Gray, 0);
+    #endif
 
     return textures_loaded;
 }

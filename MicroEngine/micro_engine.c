@@ -1,5 +1,6 @@
 #include "micro_engine.h"
 
+#include "micro_debug.c"
 #include "micro_asset_manager.c"
 #include "micro_font_manager.c"
 #include "micro_ui_manager.c"

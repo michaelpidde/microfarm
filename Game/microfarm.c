@@ -100,9 +100,7 @@ int main()
     MCR_set_tile_size(TILE_SIZE);
 
     int loaded = MCR_load_asset_class("assets\\actor", "actor");
-    printf("Assets loaded actor: %d\n", loaded);
     loaded = MCR_load_asset_class("assets\\world", "world");
-    printf("Assets loaded from world: %d\n", loaded);
     // loaded = MCR_load_asset_class("assets\\icons", "icon");
     // printf("Assets loaded from icon: %d\n", loaded);
 

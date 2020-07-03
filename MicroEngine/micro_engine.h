@@ -15,6 +15,7 @@
 
 #define DEFAULT_TILE_SIZE 32
 #define MAX_DRAW_BATCH 3000
+#define DEBUG 1
 
 Import 
 int win32_get_directory_files(char **dest, char *dir, char *mask);
