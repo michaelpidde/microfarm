@@ -21,7 +21,8 @@ gcc -std=c99 -shared -o build\Win32API.dll build\win32api.o -Wl,--out-implib,bui
 REM Build MicroEngine.dll - depends on Win32API.lib
 gcc -std=c99 -c MicroEngine\micro_engine.c -o build\micro_engine.o ^
 -IMicroEngine\_libs\SDL2-2.0.8\include ^
--IMicroEngine\_libs\SDL2_image-2.0.3\include
+-IMicroEngine\_libs\SDL2_image-2.0.3\include ^
+-D DEBUG=1
 
 gcc -std=c99 -shared -o build\MicroEngine.dll build\micro_engine.o ^
 -LMicroEngine\_libs\SDL2-2.0.8\lib\x86 ^
@@ -33,7 +34,7 @@ gcc -std=c99 -shared -o build\MicroEngine.dll build\micro_engine.o ^
 
 REM Build microfarm.exe
 REM Depends on MicroEngine.lib
-gcc -std=c99 -c Game\microfarm.c -o build\microfarm.o
+gcc -std=c99 -c Game\microfarm.c -o build\microfarm.o -D MCR_APP=1
 gcc -std=c99 -o build\microfarm.exe build\microfarm.o -Lbuild -lMicroEngine
 
 echo Compile finished %TIME%
