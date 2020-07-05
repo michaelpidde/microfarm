@@ -42,4 +42,5 @@ typedef struct State {
     SpriteBatch spritebatch;
     int tile_size;
     Controls controls;
+    int edit_mode;
 } State;

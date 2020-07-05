@@ -51,6 +51,7 @@ typedef struct Button {
     char id[KEY_LENGTH];
     ButtonStyle style;
     ElementState state;
+    int showing;
     int doing_callback;
     void (*callback)();
 } Button;
@@ -61,3 +62,8 @@ typedef struct UI_State {
     uint32 button_ctr;
     RenderStyle render_style;
 } UI_State;
+
+Button *create_button(uint32 x, uint32 y, uint32 w, uint32 h, char *id, char *text);
+Button *get_button_by_id(char *id);
+void get_button_dimensions(Button *button, int *max_width, int *max_height);
+void register_button_callback(Button *button, void (*callback)());

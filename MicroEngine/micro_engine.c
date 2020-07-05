@@ -2,6 +2,9 @@
 
 #include "micro_debug.c"
 #include "micro_asset_manager.c"
+#if DEBUG
+    #include "micro_edit_mode.c"
+#endif
 #include "micro_font_manager.c"
 #include "micro_ui_manager.c"
 
@@ -63,6 +66,10 @@ void MCR_init()
     init_asset_manager(&_state);
     init_font(_state.renderer);
     init_UI();
+    #if DEBUG
+        init_editor();
+        toggle_editor(_state.edit_mode);
+    #endif
     _state.spritebatch.ctr = 0;
     _state.tile_size = DEFAULT_TILE_SIZE;
 }
@@ -280,6 +287,17 @@ void handle_events(
                 keyboard_callback(event.key.keysym.sym, 0);
             } break;
             case SDL_KEYDOWN: {
+                switch(event.key.keysym.sym) {
+                    #if DEBUG
+                    case SDLK_BACKQUOTE: {
+                        if(event.key.keysym.mod & KMOD_LALT || event.key.keysym.mod & KMOD_RALT) {
+                            _state.edit_mode = !_state.edit_mode;
+                            toggle_editor(_state.edit_mode);
+                        }
+                    } break;
+                    #endif
+                }
+
                 keyboard_callback(event.key.keysym.sym, 1);
             } break;
             case SDL_MOUSEBUTTONDOWN: {

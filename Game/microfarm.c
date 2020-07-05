@@ -115,24 +115,5 @@ int main()
     // TODO: I don't like passing an image path into this since we already loaded assets. But this needs an SDL_Surface
     MCR_set_cursor("assets\\icons\\cursor.png");
 
-    // TODO: Remove this, just testing
-    {
-        int x = 300;
-        int y = 300;
-        int width, height;
-        MCR_push_ui_button(x, y, 0, 0, "btn_test", "Test Button");
-        MCR_get_button_dimensions("btn_test", &width, &height);
-        x += width + 10;
-        MCR_push_ui_button(x, y, 0, 0, "btn_test2", "Another Button");
-        MCR_get_button_dimensions("btn_test2", &width, &height);
-        x += width + 10;
-        MCR_push_ui_button(x, y, 0, 0, "btn_test3", "Beep");
-        MCR_register_button_callback("btn_test2", ({
-            void callback() {
-                printf("Stupid stuff.\n");
-            } callback;
-        }));
-    }
-
     MCR_run(&update_callback, &render_callback, &keyboard_callback, &mouse_callback);
 }
