@@ -364,16 +364,16 @@ void MCR_run(
     double old_time = win32_get_time(freq);
     double accumulator;
     double start;
-    double frame_ms = 16.33;
+    double frame_time = 16.33;
     while(_state.running) {
         start = win32_get_time(freq);
-        old_time = start;
         accumulator += (start - old_time);
+        old_time = start;
 
         handle_events(event, keyboard_callback, mouse_callback);
         
-        if(accumulator > frame_ms) {
-            accumulator -= frame_ms;
+        if(accumulator > frame_time) {
+            accumulator -= frame_time;
             update(update_callback);
             render(render_callback);
         } else {
