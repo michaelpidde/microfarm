@@ -12,7 +12,7 @@ void init_player()
     _state.player.asset_key = "actor_player";
     _state.player.position.x = 100;
     _state.player.position.y = 100;
-    _state.player.speed = 15;
+    _state.player.speed = 20;
     _state.player.velocity = 0;
 }
 
@@ -31,11 +31,11 @@ void player_move(Direction direction)
     switch(direction) {
         case North:
         case South: {
-            _state.player.position.y += _state.player.velocity * 10;
+            _state.player.position.y += _state.player.velocity * _state.player.speed;
         } break;
         case East:
         case West: {
-            _state.player.position.x += _state.player.velocity * 10;
+            _state.player.position.x += _state.player.velocity * _state.player.speed;
         } break;
     }
 }

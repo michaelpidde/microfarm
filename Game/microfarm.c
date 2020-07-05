@@ -18,7 +18,12 @@ State _state;
  ******************************************************************************/
 void update_callback()
 {
-    // Set background
+}
+
+
+void render_callback()
+{
+    // Add background to sprite batch
     int dimensions[2] = {0, 0};
     MCR_get_output_tiles(dimensions);
 
@@ -29,6 +34,7 @@ void update_callback()
         }
     }
 
+    // Add player to sprite batch
     Rect rect = {.x = _state.player.position.x, .y = _state.player.position.y, .w = 32, .h = 64};
     MCR_push_sprite("actor_guy", rect);
 }
@@ -128,5 +134,5 @@ int main()
         }));
     }
 
-    MCR_run(&update_callback, &keyboard_callback, &mouse_callback);
+    MCR_run(&update_callback, &render_callback, &keyboard_callback, &mouse_callback);
 }

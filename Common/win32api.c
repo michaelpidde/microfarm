@@ -51,15 +51,15 @@ void win32_free_directory_list(char **src, int ctr)
 Export
 double win32_timer_frequency()
 {
-    unsigned __int64 freq;
-    QueryPerformanceFrequency((LARGE_INTEGER*)&freq);
-    return (1.0/freq);
+    LARGE_INTEGER li;
+    QueryPerformanceFrequency((LARGE_INTEGER*)&li);
+    return (double)li.QuadPart / 1000.0;
 }
 
 Export
-unsigned __int64 win32_query_performance_counter()
+double win32_get_time(double freq)
 {
-    unsigned __int64 time;
-    QueryPerformanceCounter((LARGE_INTEGER *)&time);
-    return time;
+    LARGE_INTEGER li;
+    QueryPerformanceCounter((LARGE_INTEGER *)&li);
+    return (double)li.QuadPart / freq;
 }

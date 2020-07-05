@@ -9,6 +9,7 @@
 #include <SDL_image.h>
 #include <stdio.h>
 #include <string.h>
+#include <Windows.h>
 
 #define DEFAULT_TILE_SIZE 32
 #define MAX_DRAW_BATCH 3000
@@ -18,9 +19,9 @@ int win32_get_directory_files(char **dest, char *dir, char *mask);
 Import 
 void win32_free_directory_list(char **src, int ctr);
 Import
-__int64 win32_timer_frequency();
+double win32_timer_frequency();
 Import
-__int64 win32_query_performance_counter();
+double win32_get_time(double freq);
 
 typedef struct SpriteBatch {
     char keys[MAX_DRAW_BATCH][KEY_LENGTH];

@@ -20,6 +20,7 @@ int MCR_load_asset_class(char *dir, char *prefix);
 ImEx
 void MCR_run(
     void (*update_callback)(), 
+    void (*render_callback)(),
     void (*keyboard_callback)(char sym, int down), 
     void (*mouse_callback)(uint32 button, uint32 x, uint32 y, uint32 down));
 ImEx

@@ -30,7 +30,7 @@ int init_window(State *state)
             SDL_WINDOWPOS_UNDEFINED,
             800,
             600,
-            0 // SDL_WINDOW_FULLSCREEN_DESKTOP
+            0 //SDL_WINDOW_FULLSCREEN_DESKTOP
         );
         if(state->window == NULL) {
             printf("Failed to create game window. Error: %s\n", SDL_GetError());
@@ -148,8 +148,11 @@ void clear_sprite_batch()
  * 
  * OUTPUT: none
  ******************************************************************************/
-void render()
+void render(void (*render_callback)())
 {
+    // Do client junk first.
+    render_callback();
+
     render_spritebatch();
     clear_sprite_batch();
     render_ui(_state.renderer);
@@ -349,16 +352,33 @@ void update(void (*update_callback)())
  ******************************************************************************/
 void MCR_run(
     void (*update_callback)(), 
+    void (*render_callback)(),
     void (*keyboard_callback)(char sym, int down), 
     void (*mouse_callback)(uint32 button, uint32 x, uint32 y, uint32 down)) 
 {
     _state.running = 1;
 
     SDL_Event event;
+    // TODO: This is a really horrible game loop. Fix it.
+    double freq = win32_timer_frequency();
+    double old_time = win32_get_time(freq);
+    double accumulator;
+    double start, end;
+    double frame_time = 16.33;
     while(_state.running) {
+        start = win32_get_time(freq);
+        old_time = start;
+        accumulator += (start - old_time);
+
         handle_events(event, keyboard_callback, mouse_callback);
-        update(update_callback);
-        render();
+        
+        if(accumulator > frame_time) {
+            accumulator -= frame_time;
+            update(update_callback);
+            render(render_callback);
+        } else {
+            Sleep(1);
+        }
     }
 
     SDL_DestroyRenderer(_state.renderer);
