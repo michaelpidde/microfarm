@@ -63,7 +63,7 @@ int init_window(State *state)
 void MCR_init()
 {
     init_window(&_state);
-    init_asset_manager(&_state);
+    init_asset_manager(_state.renderer);
     init_font(_state.renderer);
     init_UI();
     #if DEBUG
@@ -164,12 +164,6 @@ void render(void (*render_callback)())
     clear_sprite_batch();
     render_ui(_state.renderer);
     SDL_RenderPresent(_state.renderer);
-}
-
-
-SDL_Renderer *get_renderer()
-{
-    return _state.renderer;
 }
 
 

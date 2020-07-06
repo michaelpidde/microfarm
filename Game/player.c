@@ -12,7 +12,7 @@ void init_player()
     _state.player.asset_key = "actor_player";
     _state.player.position.x = 100;
     _state.player.position.y = 100;
-    _state.player.speed = 20;
+    _state.player.speed = 15;
     _state.player.velocity = 0;
 }
 

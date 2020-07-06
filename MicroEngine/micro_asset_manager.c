@@ -11,8 +11,9 @@ static Assets _assets;
  * 
  * OUTPUT: none
  ******************************************************************************/
-void init_asset_manager()
+void init_asset_manager(SDL_Renderer *renderer)
 {
+    _assets.renderer = renderer;
     _assets.ctr = 0;
 }
 
@@ -60,16 +61,16 @@ SDL_Texture *get_asset(char *key) {
         sprintf(buffer, "Couldn't find texture %s\n", key);
         error(buffer);
         // TODO: Do something about hard coded width and height. Also, using global without passing it in...
-        SDL_Texture *dud = SDL_CreateTexture(get_renderer(), SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_TARGET, 100, 100);
-        SDL_SetRenderTarget(get_renderer(), dud);
-        SDL_SetRenderDrawColor(get_renderer(), 255, 0, 255, 255);
+        SDL_Texture *dud = SDL_CreateTexture(_assets.renderer, SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_TARGET, 100, 100);
+        SDL_SetRenderTarget(_assets.renderer, dud);
+        SDL_SetRenderDrawColor(_assets.renderer, 255, 0, 255, 255);
         SDL_Rect dud_rect;
         dud_rect.x = 0;
         dud_rect.y = 0;
         dud_rect.w = 100;
         dud_rect.h = 100;
-        SDL_RenderFillRect(get_renderer(), &dud_rect);
-        SDL_SetRenderTarget(get_renderer(), NULL);
+        SDL_RenderFillRect(_assets.renderer, &dud_rect);
+        SDL_SetRenderTarget(_assets.renderer, NULL);
         return dud;
     } else {
         return _assets.textures[pos];

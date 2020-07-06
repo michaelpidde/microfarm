@@ -97,7 +97,6 @@ void mouse_callback(uint32 button, uint32 x, uint32 y, uint32 down)
     if(button == 1) {
         strcpy(b, "right");
     }
-    printf("MOUSE: %d,%d, %s\n", x, y, b);
 }
 
 
