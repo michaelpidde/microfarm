@@ -44,3 +44,5 @@ typedef struct State {
     Controls controls;
     int edit_mode;
 } State;
+
+SDL_Renderer *get_renderer();

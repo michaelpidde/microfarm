@@ -167,6 +167,12 @@ void render(void (*render_callback)())
 }
 
 
+SDL_Renderer *get_renderer()
+{
+    return _state.renderer;
+}
+
+
 /*******************************************************************************
  * Adds element to sprite batch.
  * 
