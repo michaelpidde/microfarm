@@ -27,13 +27,27 @@ int init_window(State *state)
         printf("Failed to initialize SDL. Error: %s\n", SDL_GetError());
         success = 0;
     } else {
+        SDL_Rect display_bounds;
+        display_bounds.x = 0;
+        display_bounds.y = 0;
+
+        #if DEBUG
+        // I only care about putting the game on a second display during development.
+        // Put it on the primary display otherwise.
+        int displays = SDL_GetNumVideoDisplays();
+        if(displays == 2) {
+            SDL_GetDisplayBounds(1, &display_bounds);
+            SDL_SetHint(SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS, "0");
+        }
+        #endif
+
         state->window = SDL_CreateWindow(
             "Micro Engine Game",
-            SDL_WINDOWPOS_UNDEFINED,
-            SDL_WINDOWPOS_UNDEFINED,
+            display_bounds.x,
+            display_bounds.y,
             800,
             600,
-            0 //SDL_WINDOW_FULLSCREEN_DESKTOP
+            SDL_WINDOW_FULLSCREEN_DESKTOP
         );
         if(state->window == NULL) {
             printf("Failed to create game window. Error: %s\n", SDL_GetError());
