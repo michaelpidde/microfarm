@@ -1,23 +1,43 @@
 #include "micro_engine.h"
 
-void init_editor()
+void init_editor(SDL_Renderer *renderer)
 {
-    int x = 300;
-    int y = 300;
+    load_asset_class(renderer, "res\\icons", "res_icon");
+
+    int x = 10;
+    int y = 10;
+    DragContainer *container = create_container(x, y, 200, 500, "toolbar");
+
     int width, height;
-    Button *button = create_button(x, y, 0, 0, "btn_test", "Test Button");
+    Button *button = create_button(x, y, 0, 0, "collision", "Collision");
+    button->container = container;
     get_button_dimensions(button, &width, &height);
     x += width + 10;
-    button = create_button(x, y, 0, 0, "btn_test2", "Another Button");
+    button = create_button(x, y, 0, 0, "lights", "Lights");
+    button->container = container;
     // register_button_callback(button, &stupid_callback);
     get_button_dimensions(button, &width, &height);
     x += width + 10;
-    create_button(x, y, 0, 0, "btn_test3", "Beep");
+    button = create_button(x, y, 0, 0, "paint", "Paint");
+    button->container = container;
 }
 
 void toggle_editor(int showing)
 {
-    get_button_by_id("btn_test")->showing = showing;
-    get_button_by_id("btn_test2")->showing = showing;
-    get_button_by_id("btn_test3")->showing = showing;
+    DragContainer *dc = get_container_by_id("toolbar");
+    if(dc) {
+        dc->showing = showing;
+    }
+    Button *b = get_button_by_id("collision");
+    if(b) {
+        b->showing = showing;
+    }
+    b = get_button_by_id("lights");
+    if(b) {
+        b->showing = showing;
+    }
+    b = get_button_by_id("paint");
+    if(b) {
+        b->showing = showing;
+    }
 }

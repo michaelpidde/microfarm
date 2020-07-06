@@ -67,7 +67,7 @@ void MCR_init()
     init_font(_state.renderer);
     init_UI();
     #if DEBUG
-        init_editor();
+        init_editor(_state.renderer);
         toggle_editor(_state.edit_mode);
     #endif
     _state.spritebatch.ctr = 0;
@@ -252,14 +252,18 @@ void MCR_push_ui_button(uint32 x, uint32 y, uint32 w, uint32 h, char *id, char *
 void MCR_get_button_dimensions(char *id, int *max_width, int *max_height)
 {
     Button *button = get_button_by_id(id);
-    get_button_dimensions(button, max_width, max_height);
+    if(button) {
+        get_button_dimensions(button, max_width, max_height);
+    }
 }
 
 
 void MCR_register_button_callback(char *id, void (*callback)())
 {
     Button *button = get_button_by_id(id);
-    register_button_callback(button, callback);
+    if(button) {
+        register_button_callback(button, callback);
+    }
 }
 
 

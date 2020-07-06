@@ -31,18 +31,18 @@ FontState *_selected_font;
  ******************************************************************************/
 void init_font(SDL_Renderer *renderer)
 {
-    load_asset_class(renderer, "assets\\fonts", "font");
+    load_asset_class(renderer, "res\\fonts", "res_font");
 
 	// TODO: Make this not hard coded.
 	FontState fs;
-	fs.glyph_texture = get_asset("font_cabin_20_black");
+	fs.glyph_texture = get_asset("res_font_cabin_20_black");
 	fs.glyphs = font_cabin_20_black_glyphs;
 	fs.id_link = font_cabin_20_black_glyph_id_link;
 	fs.leading = &font_cabin_20_leading;
 	fs.font_size = &font_cabin_20_font_size;
 	
 	_fonts.font_state[_fonts.ctr] = fs;
-	strcpy(_fonts.keys[_fonts.ctr], "font_cabin_20_black");
+	strcpy(_fonts.keys[_fonts.ctr], "res_font_cabin_20_black");
 	++_fonts.ctr;
 }
 

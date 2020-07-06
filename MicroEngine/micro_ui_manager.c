@@ -13,7 +13,6 @@ UI_State _ui_state;
  ******************************************************************************/
 void init_UI()
 {
-    _ui_state.button_ctr = 0;
     _ui_state.render_style = Adaptive;
 }
 
@@ -46,6 +45,27 @@ ButtonStyle get_default_button_style()
 
 
 /*******************************************************************************
+ * Gets generic color and style scheme for container.
+ * 
+ * INPUT: none
+ * 
+ * OUTPUT:
+ * ContainerStyle -- Container style information
+ ******************************************************************************/
+ContainerStyle get_default_container_style()
+{
+    ContainerStyle cs;
+    RGBColor base = {.r = 248, .g = 232, .b = 218};
+    RGBColor border = {.r = 213, .g = 120, .b = 36};
+    cs.base_color = base;
+    cs.border_color = border;
+    cs.border_size = 3;
+    cs.padding = 7;
+    return cs;
+}
+
+
+/*******************************************************************************
  * Add UI button.
  * 
  * INPUT:
@@ -55,7 +75,8 @@ ButtonStyle get_default_button_style()
  * unsigned int -- Button height
  * char *       -- Button text
  * 
- * OUTPUT: none
+ * OUTPUT:
+ * Button *     -- Reference to created element
  ******************************************************************************/
 Button *create_button(uint32 x, uint32 y, uint32 w, uint32 h, char *id, char *text)
 {
@@ -74,6 +95,41 @@ Button *create_button(uint32 x, uint32 y, uint32 w, uint32 h, char *id, char *te
         _ui_state.buttons[_ui_state.button_ctr] = b;
         ++_ui_state.button_ctr;
         return &_ui_state.buttons[_ui_state.button_ctr - 1];
+    } else {
+        error("Max number of buttons added.\n");
+    }
+}
+
+
+/*******************************************************************************
+ * Add UI container.
+ * 
+ * INPUT:
+ * unsigned int    -- X position
+ * unsigned int    -- Y position
+ * unsigned int    -- Button width
+ * unsigned int    -- Button height
+ * 
+ * OUTPUT:
+ * DragContainer * -- Reference to created element
+ ******************************************************************************/
+DragContainer *create_container(uint32 x, uint32 y, uint32 w, uint32 h, char *id)
+{
+    if(_ui_state.container_ctr < MAX_CONTAINERS) {
+        DragContainer dc;
+        dc.style = get_default_container_style();
+        dc.x = x;
+        dc.y = y;
+        dc.w = w;
+        dc.h = h;
+        dc.showing = 1;
+        dc.dragbar_state = Off;
+        strcpy(dc.id, id);
+        _ui_state.containers[_ui_state.container_ctr] = dc;
+        ++_ui_state.container_ctr;
+        return &_ui_state.containers[_ui_state.container_ctr - 1];
+    } else {
+        error("Max number of containers added.\n");
     }
 }
 
@@ -109,6 +165,26 @@ void get_button_dimensions(Button *button, int *max_width, int *max_height)
 
 
 /*******************************************************************************
+ * Gets dimensions of drag bar portion of DragContainer element.
+ * 
+ * INPUT:
+ * DragContainer * -- The container to target
+ * 
+ * OUTPUT:
+ * Rect            -- The dimensions of the drag bar
+ ******************************************************************************/
+SDL_Rect get_drag_bar_position(DragContainer *container)
+{
+    SDL_Rect dimensions;
+    dimensions.x = container->x + container->style.border_size;
+    dimensions.y = container->y + container->style.border_size;
+    dimensions.h = DRAG_BAR_HEIGHT;
+    dimensions.w = container->w - (container->style.border_size * 2);
+    return dimensions;
+}
+
+
+/*******************************************************************************
  * Find a button by its ID.
  * 
  * INPUT:
@@ -128,6 +204,35 @@ Button *get_button_by_id(char *id)
 }
 
 
+/*******************************************************************************
+ * Find a container by its ID.
+ * 
+ * INPUT:
+ * char * -- ID
+ * 
+ * OUTPUT:
+ * DragContainer -- Container element
+ ******************************************************************************/
+DragContainer *get_container_by_id(char *id)
+{
+    for(int i = 0; i < _ui_state.container_ctr; ++i) {
+        if(strcmp(id, _ui_state.containers[i].id) == 0) {
+            return &_ui_state.containers[i];
+        }
+    }
+    // TODO: Figure out what to do if this doesn't return in the loop.
+}
+
+
+/*******************************************************************************
+ * Sets callback function for button to call on click.
+ * 
+ * INPUT:
+ * Button *   -- Button to associate callback to
+ * void (*)() -- Function pointer to callback
+ * 
+ * OUTPUT: none
+ ******************************************************************************/
 void register_button_callback(Button *button, void (*callback)())
 {
     button->callback = callback;
@@ -143,13 +248,72 @@ void register_button_callback(Button *button, void (*callback)())
  ******************************************************************************/
 void render_ui(SDL_Renderer *renderer)
 {
+    SDL_Rect rect;
+
+    /*
+     * Containers
+     */
+    for(int i = 0; i < _ui_state.container_ctr; ++i) {
+        DragContainer *container = &_ui_state.containers[i];
+        if(container->showing) {
+            // Border
+            rect.x = container->x;
+            rect.y = container->y;
+            rect.h = container->h;
+            rect.w = container->w;
+            SDL_SetRenderDrawColor(
+                renderer,
+                container->style.border_color.r,
+                container->style.border_color.g,
+                container->style.border_color.b,
+                255
+            );
+            SDL_RenderFillRect(renderer, &rect);
+
+            // Body
+            rect.x = container->x + container->style.border_size;
+            rect.y = container->y + container->style.border_size;
+            rect.w = container->w - (container->style.border_size * 2);
+            rect.h = container->h - (container->style.border_size * 2);
+            SDL_SetRenderDrawColor(
+                renderer,
+                container->style.base_color.r,
+                container->style.base_color.g,
+                container->style.base_color.b,
+                255
+            );
+            SDL_RenderFillRect(renderer, &rect);
+
+            // Drag bar
+            SDL_Rect rect = get_drag_bar_position(container);
+            SDL_Rect src;
+            src.x = 0;
+            src.y = 0;
+            int w, h;
+            SDL_Texture *texture = get_asset("res_icon_drag_panel_head");
+            SDL_QueryTexture(texture, NULL, NULL, &w, &h);
+            src.w = w;
+            src.h = h;
+            SDL_RenderCopy(renderer, texture, &src, &rect);
+        }
+    }
+
     /*
      * Buttons
      */
-    SDL_Rect rect;
     for(int i = 0; i < _ui_state.button_ctr; ++i) {
         Button *button = &_ui_state.buttons[i];
         if(button->showing) {
+            // Real X and Y account for relative positioning inside of a container.
+            int real_x = 0;
+            int real_y = 0;
+            if(button->container) {
+                real_x = button->container->x + button->container->style.padding;
+                real_y = button->container->y +
+                    get_drag_bar_position(button->container).h +
+                    button->container->style.padding;
+            }
+
             // Set font before we start doing calculations on its size.
             set_font(button->style.font_key);
 
@@ -157,8 +321,8 @@ void render_ui(SDL_Renderer *renderer)
             get_button_dimensions(button, &max_width, &max_height);
 
             // Border
-            rect.x = button->x;
-            rect.y = button->y;
+            rect.x = real_x + button->x;
+            rect.y = real_y + button->y;
             rect.w = max_width;
             rect.h = max_height;
             SDL_SetRenderDrawColor(
@@ -171,8 +335,8 @@ void render_ui(SDL_Renderer *renderer)
             SDL_RenderFillRect(renderer, &rect);
 
             // Body
-            rect.x = button->x + button->style.border_size;
-            rect.y = button->y + button->style.border_size;
+            rect.x = real_x + button->x + button->style.border_size;
+            rect.y = real_y + button->y + button->style.border_size;
             rect.w = max_width - (button->style.border_size * 2);
             rect.h = max_height - (button->style.border_size * 2);
             RGBColor *state_color = &button->style.base_color;
@@ -196,8 +360,8 @@ void render_ui(SDL_Renderer *renderer)
             // TODO: Handle clipping for Strict RenderStyle
             // Text
             SDL_Rect dest;
-            int x = button->x + button->style.border_size + button->style.padding;
-            int y = button->y + button->style.border_size + button->style.padding;
+            int x = real_x + button->x + button->style.border_size + button->style.padding;
+            int y = real_y + button->y + button->style.border_size + button->style.padding;
             render_word(renderer, button->text, x, y);
         }
     }
@@ -218,6 +382,44 @@ void update_ui(State *gamestate)
     SDL_GetMouseState(&mouse_x, &mouse_y);
 
     /*
+     * Containers
+     */
+    for(int i = 0; i < _ui_state.container_ctr; ++i) {
+        DragContainer *container = &_ui_state.containers[i];
+        if(container->showing) {
+            SDL_Rect rect = get_drag_bar_position(container);
+            int left = rect.x;
+            int right = rect.x + rect.w;
+            int top = rect.y;
+            int bottom = rect.y + rect.h;
+            // Check if state is Click so if we're dragging we can keep doing movement. If we only check if mouse
+            // is inside dimensions of drag bar, if you're dragging wildly then you're going to mouse off of the
+            // drag bar and it will stop tracking with the mouse movement even while the mouse button is still clicked.
+            if(container->dragbar_state == Click ||
+                (mouse_x >= left &&
+                mouse_x <= right &&
+                mouse_y >= top &&
+                mouse_y <= bottom)
+            ) {
+                if(gamestate->controls.mouse_left == 1) {
+                    container->dragbar_state = Click;
+                    int move_x = _ui_state.last_mouse_x - mouse_x;
+                    int move_y = _ui_state.last_mouse_y - mouse_y;
+                    // move_x and move_y will be positive for up/left movement and negative for down/right movement. Ex:
+                    // x = 100. Move left 5 pixels. x = 100 - 5.
+                    // x = 100. Move right 5 pixels. x = 100 - (-5).
+                    container->x -= move_x;
+                    container->y -= move_y;
+                } else {
+                    container->dragbar_state = Hover;
+                }
+            } else {
+                container->dragbar_state = Off;
+            }
+        }
+    }
+
+    /*
      * Buttons
      */
     for(int i = 0; i < MAX_BUTTONS; ++i) {
@@ -229,14 +431,25 @@ void update_ui(State *gamestate)
             int max_width, max_height;
             get_button_dimensions(button, &max_width, &max_height);
 
-            int left = button->x;
-            int right = button->x + max_width;
-            int top = button->y;
-            int bottom = button->y + max_height;
+            // Real X and Y account for relative positioning inside of a container.
+            int real_x = button->x;
+            int real_y = button->y;
+            if(button->container) {
+                real_x = button->container->x + button->container->style.padding + button->x;
+                real_y = button->container->y +
+                    get_drag_bar_position(button->container).h +
+                    button->container->style.padding +
+                    button->y;
+            }
+
+            int left = real_x;
+            int right = real_x + max_width;
+            int top = real_y;
+            int bottom = real_y + max_height;
             if(mouse_x >= left &&
-            mouse_x <= right &&
-            mouse_y >= top &&
-            mouse_y <= bottom)
+                mouse_x <= right &&
+                mouse_y >= top &&
+                mouse_y <= bottom)
             {
                 if(gamestate->controls.mouse_left == 1) {
                     button->state = Click;
@@ -253,4 +466,8 @@ void update_ui(State *gamestate)
             }
         }
     }
+
+    // Save these to calculate drag.
+    _ui_state.last_mouse_x = mouse_x;
+    _ui_state.last_mouse_y = mouse_y;
 }

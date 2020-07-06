@@ -57,16 +57,24 @@ void keyboard_callback(char sym, int down)
             MRC_quit();
         } break;
         case KEY_w: {
-            player_move(North);
+            if(down) {
+                player_move(North);
+            }
         } break;
         case KEY_a: {
-            player_move(West);
+            if(down) {
+                player_move(West);
+            }
         } break;
         case KEY_s: {
-            player_move(South);
+            if(down) {
+                player_move(South);
+            }
         } break;
         case KEY_d: {
-            player_move(East);
+            if(down) {
+                player_move(East);
+            }
         } break;
     }
 }

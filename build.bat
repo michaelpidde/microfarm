@@ -3,7 +3,7 @@
 mkdir build
 xcopy /E /D /I /Y Game\assets build\assets
 REM TODO: ONLY COPY THESE ON NON-RELEASE BUILD...
-xcopy /E /D /I /Y MicroEngine\assets build\assets
+xcopy /E /D /I /Y MicroEngine\res build\res
 xcopy /Y /D MicroEngine\_libs\SDL2-2.0.8\lib\x86\SDL2.dll build
 xcopy /Y /D MicroEngine\_libs\SDL2_image-2.0.3\lib\x86\SDL2_image.dll build
 xcopy /Y /D MicroEngine\_libs\SDL2_image-2.0.3\lib\x86\libpng16-16.dll build
