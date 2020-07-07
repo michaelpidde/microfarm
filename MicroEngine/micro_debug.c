@@ -2,28 +2,28 @@
 #include "micro_debug.h"
 
 
-/*******************************************************************************
+/**
  * Print to command prompt with dangerous, bold look.
  * 
  * INPUT:
  * char * -- The text to print
  * 
  * OUTPUT: none
- ******************************************************************************/
+ */
 void error(char *buffer)
 {
     debug_string(buffer, White, Red, DEBUG_STYLE_BOLD);
 }
 
 
-/*******************************************************************************
+/**
  * Sets foreground (text) color in command prompt.
  * 
  * INPUT:
  * Color -- Color enum value to set
  * 
  * OUTPUT: none
- ******************************************************************************/
+ */
 void console_foreground_color(Color color)
 {
     switch(color) {
@@ -79,14 +79,14 @@ void console_foreground_color(Color color)
 }
 
 
-/*******************************************************************************
+/**
  * Sets background color in command prompt.
  * 
  * INPUT:
  * Color -- Color enum value to set
  * 
  * OUTPUT: none
- ******************************************************************************/
+ */
 void console_background_color(Color color)
 {
     switch(color) {
@@ -142,7 +142,7 @@ void console_background_color(Color color)
 }
 
 
-/*******************************************************************************
+/**
  * Prints text to command prompt with given color. Uses default styling for
  * background and text bold/underline properties. This is a convenience
  * function which calls down to the more advanced debug_string function.
@@ -152,7 +152,7 @@ void console_background_color(Color color)
  * Color  -- Color enum value to set the foreground (text) to
  * 
  * OUTPUT: none
- ******************************************************************************/
+ */
 void debug_string_simple(char *buffer, Color foreground)
 {
     console_foreground_color(foreground);
@@ -163,7 +163,7 @@ void debug_string_simple(char *buffer, Color foreground)
 }
 
 
-/*******************************************************************************
+/**
  * Prints text to command prompt with given foreground and background colors as
  * well as other text styling options.
  * 
@@ -174,7 +174,7 @@ void debug_string_simple(char *buffer, Color foreground)
  * int    -- Style bit flags defined via DEBUG_STYLE_ definitions
  * 
  * OUTPUT: 
- ******************************************************************************/
+ */
 void debug_string(char *buffer, Color foreground, Color background, int style)
 {
     console_foreground_color(foreground);

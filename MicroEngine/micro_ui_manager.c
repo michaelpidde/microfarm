@@ -4,27 +4,27 @@
 UI_State _ui_state;
 
 
-/*******************************************************************************
+/**
  * Initialize UI state.
  * 
  * INPUT: 
  * 
  * OUTPUT: 
- ******************************************************************************/
+ */
 void init_UI()
 {
     _ui_state.render_style = Adaptive;
 }
 
 
-/*******************************************************************************
+/**
  * Gets generic color and style scheme for button.
  * 
  * INPUT: none
  * 
  * OUTPUT:
  * ButtonStyle -- Button style information
- ******************************************************************************/
+ */
 ButtonStyle get_default_button_style()
 {
     ButtonStyle bs;
@@ -44,14 +44,14 @@ ButtonStyle get_default_button_style()
 }
 
 
-/*******************************************************************************
+/**
  * Gets generic color and style scheme for container.
  * 
  * INPUT: none
  * 
  * OUTPUT:
  * ContainerStyle -- Container style information
- ******************************************************************************/
+ */
 ContainerStyle get_default_container_style()
 {
     ContainerStyle cs;
@@ -65,7 +65,7 @@ ContainerStyle get_default_container_style()
 }
 
 
-/*******************************************************************************
+/**
  * Add UI button.
  * 
  * INPUT:
@@ -77,7 +77,7 @@ ContainerStyle get_default_container_style()
  * 
  * OUTPUT:
  * Button *     -- Reference to created element
- ******************************************************************************/
+ */
 Button *create_button(uint32 x, uint32 y, uint32 w, uint32 h, char *id, char *text)
 {
     if(_ui_state.button_ctr < MAX_BUTTONS) {
@@ -101,7 +101,7 @@ Button *create_button(uint32 x, uint32 y, uint32 w, uint32 h, char *id, char *te
 }
 
 
-/*******************************************************************************
+/**
  * Add UI container.
  * 
  * INPUT:
@@ -112,7 +112,7 @@ Button *create_button(uint32 x, uint32 y, uint32 w, uint32 h, char *id, char *te
  * 
  * OUTPUT:
  * DragContainer * -- Reference to created element
- ******************************************************************************/
+ */
 DragContainer *create_container(uint32 x, uint32 y, uint32 w, uint32 h, char *id)
 {
     if(_ui_state.container_ctr < MAX_CONTAINERS) {
@@ -134,7 +134,7 @@ DragContainer *create_container(uint32 x, uint32 y, uint32 w, uint32 h, char *id
 }
 
 
-/*******************************************************************************
+/**
  * Gets the max dimensions of a button based on the UI rendering style.
  * 
  * INPUT:
@@ -146,7 +146,7 @@ DragContainer *create_container(uint32 x, uint32 y, uint32 w, uint32 h, char *id
  * 
  * WARNING: If set_font has not been called before this function it will
  * probably blow up.
- ******************************************************************************/
+ */
 void get_button_dimensions(Button *button, int *max_width, int *max_height)
 {
     // TODO: This is really stupid and I shouldn't have to do this here.
@@ -164,7 +164,7 @@ void get_button_dimensions(Button *button, int *max_width, int *max_height)
 }
 
 
-/*******************************************************************************
+/**
  * Gets dimensions of drag bar portion of DragContainer element.
  * 
  * INPUT:
@@ -172,7 +172,7 @@ void get_button_dimensions(Button *button, int *max_width, int *max_height)
  * 
  * OUTPUT:
  * Rect            -- The dimensions of the drag bar
- ******************************************************************************/
+ */
 SDL_Rect get_drag_bar_position(DragContainer *container)
 {
     SDL_Rect dimensions;
@@ -184,7 +184,7 @@ SDL_Rect get_drag_bar_position(DragContainer *container)
 }
 
 
-/*******************************************************************************
+/**
  * Find a button by its ID.
  * 
  * INPUT:
@@ -192,7 +192,7 @@ SDL_Rect get_drag_bar_position(DragContainer *container)
  * 
  * OUTPUT:
  * Button -- Button element
- ******************************************************************************/
+ */
 Button *get_button_by_id(char *id)
 {
     for(int i = 0; i < _ui_state.button_ctr; ++i) {
@@ -204,7 +204,7 @@ Button *get_button_by_id(char *id)
 }
 
 
-/*******************************************************************************
+/**
  * Find a container by its ID.
  * 
  * INPUT:
@@ -212,7 +212,7 @@ Button *get_button_by_id(char *id)
  * 
  * OUTPUT:
  * DragContainer -- Container element
- ******************************************************************************/
+ */
 DragContainer *get_container_by_id(char *id)
 {
     for(int i = 0; i < _ui_state.container_ctr; ++i) {
@@ -224,7 +224,7 @@ DragContainer *get_container_by_id(char *id)
 }
 
 
-/*******************************************************************************
+/**
  * Sets callback function for button to call on click.
  * 
  * INPUT:
@@ -232,20 +232,20 @@ DragContainer *get_container_by_id(char *id)
  * void (*)() -- Function pointer to callback
  * 
  * OUTPUT: none
- ******************************************************************************/
+ */
 void register_button_callback(Button *button, void (*callback)())
 {
     button->callback = callback;
 }
 
 
-/*******************************************************************************
+/**
  * Render UI elements. This should happen after sprite batch rendering.
  * 
  * INPUT: none
  * 
  * OUTPUT: none
- ******************************************************************************/
+ */
 void render_ui(SDL_Renderer *renderer)
 {
     SDL_Rect rect;
@@ -368,14 +368,14 @@ void render_ui(SDL_Renderer *renderer)
 }
 
 
-/*******************************************************************************
+/**
  * Update UI elements. Check for mouse position and change element states
  * based on it.
  * 
  * INPUT: none
  * 
  * OUTPUT: none
- ******************************************************************************/
+ */
 void update_ui(State *gamestate)
 {
     int mouse_x, mouse_y;

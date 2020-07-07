@@ -1,12 +1,12 @@
 #include "microfarm.h"
 
-/*******************************************************************************
+/**
  * Set up default player data
  * 
  * INPUT: none
  * 
  * OUTPUT: none
- ******************************************************************************/
+ */
 void init_player()
 {
     _state.player.asset_key = "actor_player";
@@ -17,7 +17,7 @@ void init_player()
 }
 
 
-/*******************************************************************************
+/**
  * Determines if player is going to collide with a world object in next
  * movement in given direction.
  * 
@@ -27,7 +27,7 @@ void init_player()
  * 
  * OUTPUT:
  * int       -- Boolean result
- ******************************************************************************/
+ */
 int collision(Direction direction, int increment)
 {
     // TODO: Remove hard coded size
@@ -54,14 +54,14 @@ int collision(Direction direction, int increment)
 }
 
 
-/*******************************************************************************
+/**
  * Increment player position on 2D grid
  * 
  * INPUT:
  * Direction -- The direction to move player
  * 
  * OUTPUT: none
- ******************************************************************************/
+ */
 void player_move(Direction direction)
 {
     int increment = direction_to_increment(direction);

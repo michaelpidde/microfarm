@@ -3,7 +3,7 @@
 #include "../Common/types.h"
 
 
-/*******************************************************************************
+/**
  * Determine whether there is collision between two rectangles.
  * 
  * INPUT:
@@ -12,7 +12,7 @@
  * 
  * OUTPUT:
  * int  -- Boolean result
- ******************************************************************************/
+ */
 int MCR_rect_overlap(Rect r1, Rect r2) {
     if(r1.x <= r2.x + r2.w &&
         r1.x + r1.w >= r2.x &&

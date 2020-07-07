@@ -26,24 +26,24 @@ typedef struct ContainerStyle {
     uint32 padding;
 } ContainerStyle;
 
-/*******************************************************************************
+/**
  * Off: State when mouse is not touching element.
  * 
  * Hover: State when mouse is over element.
  * 
  * Click: State when mouse is over element and mouse button is clicked.
- ******************************************************************************/
+ */
 typedef enum ElementState {
     Off, Hover, Click
 } ElementState;
 
-/*******************************************************************************
+/**
  * Adaptive: Uses element width and height as starting values but will expand to
  * accommodate inner content size.
  * 
  * Strict: Uses element width and height verbatim and will clip inner content to
  * maintain static dimensions.
- ******************************************************************************/
+ */
 typedef enum RenderStyle {
     Adaptive, Strict
 } RenderStyle;

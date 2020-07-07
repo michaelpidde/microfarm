@@ -2,20 +2,20 @@
 
 State _state;
 
-/*******************************************************************************
+/**
  * Single compilation unit.
- ******************************************************************************/
+ */
 #include "unitybuild.c"
 
 
-/*******************************************************************************
+/**
  * Primary entry point for game state updating. This gets passed into
  * MCR_run as a callback.
  * 
  * INPUT: none
  * 
  * OUTPUT: none
- ******************************************************************************/
+ */
 void update()
 {
     if(_state.keys_down.w) {
@@ -70,13 +70,13 @@ void update()
 }
 
 
-/*******************************************************************************
+/**
  * Primary entry point to rendering.
  * 
  * INPUT: none
  * 
  * OUTPUT: none
- ******************************************************************************/
+ */
 void render()
 {
     // RGBColor outline = {.r = 255, .g = 0, .b = 0};
@@ -87,7 +87,7 @@ void render()
 }
 
 
-/*******************************************************************************
+/**
  * Primary entry point for keyboard input handling. This gets passed to
  * MCR_run as a callback.
  * 
@@ -96,7 +96,7 @@ void render()
  * int  -- Boolean indication of key pressed down
  * 
  * OUTPUT: none
- ******************************************************************************/
+ */
 void keyboard(char sym, int down)
 {
     switch(sym) {
@@ -135,7 +135,7 @@ void keyboard(char sym, int down)
 }
 
 
-/*******************************************************************************
+/**
  * Primary entry point for mouse event handling.
  * 
  * INPUT:
@@ -145,19 +145,19 @@ void keyboard(char sym, int down)
  * uint32 -- Boolean indication of mouse button down
  * 
  * OUTPUT: none
- ******************************************************************************/
+ */
 void mouse(uint32 button, uint32 x, uint32 y, uint32 down)
 {
 }
 
 
-/*******************************************************************************
+/**
  * Main entry to game client
  * 
  * INPUT: none
  * 
  * OUTPUT: none
- ******************************************************************************/
+ */
 int main()
 {
     MCR_init("Micro Farm");

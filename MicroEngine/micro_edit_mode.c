@@ -1,14 +1,14 @@
 #include "micro_engine.h"
 
 
-/*******************************************************************************
+/**
  * Sets up editor with all its elements.
  * 
  * INPUT:
  * SDL_Renderer * -- Renderer stored in engine state
  * 
  * OUTPUT: none
- ******************************************************************************/
+ */
 void init_editor(SDL_Renderer *renderer)
 {
     load_asset_class(renderer, "res\\icons", "res_icon");
@@ -32,14 +32,14 @@ void init_editor(SDL_Renderer *renderer)
 }
 
 
-/*******************************************************************************
+/**
  * Shows or hides the editor elements.
  * 
  * INPUT:
  * int -- Boolean indicating whether elements should be showing
  * 
  * OUTPUT: none
- ******************************************************************************/
+ */
 void toggle_editor(int showing)
 {
     DragContainer *dc = get_container_by_id("toolbar");

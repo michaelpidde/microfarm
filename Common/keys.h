@@ -1,10 +1,10 @@
 #pragma once
 
-/*******************************************************************************
+/**
  * This is used to define common key codes for our game client and engine 
  * so our game client doesn't need to be aware of the engine's chosen rendering
  * framework.
- ******************************************************************************/
+ */
 #define KEY_a 'a'
 #define KEY_b 'b'
 #define KEY_c 'c'

@@ -2,7 +2,7 @@
 
 #include "types.h"
 
-/*******************************************************************************
+/**
  * Get 2D grid movement increment or decrement based on direction.
  * 
  * INPUT:
@@ -10,7 +10,7 @@
  * 
  * OUTPUT:
  * int       -- Signed unit of increment
- ******************************************************************************/
+ */
 int direction_to_increment(Direction direction)
 {
     switch(direction) {

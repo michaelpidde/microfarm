@@ -4,14 +4,14 @@
 static Assets _assets;
 
 
-/*******************************************************************************
+/**
  * Module initialization.
  * 
  * INPUT:
  * SDL_Renderer * -- Renderer stored in engine state
  * 
  * OUTPUT: none
- ******************************************************************************/
+ */
 void init_asset_manager(SDL_Renderer *renderer)
 {
     _assets.renderer = renderer;
@@ -19,7 +19,7 @@ void init_asset_manager(SDL_Renderer *renderer)
 }
 
 
-/*******************************************************************************
+/**
  * Find character in string.
  * 
  * INPUT:
@@ -28,7 +28,7 @@ void init_asset_manager(SDL_Renderer *renderer)
  * 
  * OUTPUT:
  * int    -- The index of needle, if found, otherwise -1
- ******************************************************************************/
+ */
 int str_find(char needle, char *haystack) {
     char * find = strrchr(haystack, needle);
     if(find != NULL) {
@@ -38,7 +38,7 @@ int str_find(char needle, char *haystack) {
 }
 
 
-/*******************************************************************************
+/**
  * Get texture from loaded assets dictionary by unique name. This function will
  * return a dud texture in the event that the requested asset is not found. This
  * will visually indicate that there is a missing asset.
@@ -48,7 +48,7 @@ int str_find(char needle, char *haystack) {
  * 
  * OUTPUT:
  * SDL_Texture -- Asset texture
- ******************************************************************************/
+ */
 SDL_Texture *get_asset(char *key) {
     int pos = -1;
     for(int i = 0; i < _assets.ctr; ++i) {
@@ -79,7 +79,7 @@ SDL_Texture *get_asset(char *key) {
 }
 
 
-/*******************************************************************************
+/**
  * 
  * 
  * INPUT:
@@ -89,7 +89,7 @@ SDL_Texture *get_asset(char *key) {
  * 
  * OUTPUT:
  * int          -- Number of assets loaded
- ******************************************************************************/
+ */
 int load_asset_class(SDL_Renderer *renderer, char *dir, char *prefix)
 {
     char *files[MAX_DIR_FILES];

@@ -12,7 +12,7 @@
 State _state;
 
 
-/*******************************************************************************
+/**
  * Sets up game window and renderer.
  * 
  * INPUT:
@@ -21,7 +21,7 @@ State _state;
  * 
  * OUTPUT:
  * int     -- Boolean success flag
- ******************************************************************************/
+ */
 int init_window(State *state, char *title)
 {
     int success = 1;
@@ -78,14 +78,14 @@ int init_window(State *state, char *title)
 }
 
 
-/*******************************************************************************
+/**
  * Engine initialization. Proxy to initialize modules.
  * 
  * INPUT:
  * char * -- Title of game
  * 
  * OUTPUT: none
- ******************************************************************************/
+ */
 void MCR_init(char *title)
 {
     init_window(&_state, title);
@@ -101,21 +101,21 @@ void MCR_init(char *title)
 }
 
 
-/*******************************************************************************
+/**
  * Allow override of default tile size.
  * 
  * INPUT:
  * int -- Override tile size
  * 
  * OUTPUT: none
- ******************************************************************************/
+ */
 void MCR_set_tile_size(int size)
 {
     _state.tile_size = size;
 }
 
 
-/*******************************************************************************
+/**
  * Proxy to asset loader so client does not need to be aware of renderer.
  * 
  * INPUT:
@@ -124,21 +124,21 @@ void MCR_set_tile_size(int size)
  * 
  * OUTPUT:
  * int    -- Number of assets loaded
- ******************************************************************************/
+ */
 int MCR_load_asset_class(char *dir, char *prefix)
 {
     return load_asset_class(_state.renderer, dir, prefix);
 }
 
 
-/*******************************************************************************
+/**
  * Sprite batch rendering. Clear to black, then loop sprite batch and render
  * each item.
  * 
  * INPUT: none
  * 
  * OUTPUT: none
- ******************************************************************************/
+ */
 void render_spritebatch()
 {
     SDL_SetRenderDrawColor(_state.renderer, 0, 0, 0, 255);
@@ -159,28 +159,28 @@ void render_spritebatch()
 }
 
 
-/*******************************************************************************
+/**
  * Resets sprite batch. Batch arrays are not cleared, just reset the counter
  * to overrite array positions.
  * 
  * INPUT: none
  * 
  * OUTPUT: none
- ******************************************************************************/
+ */
 void clear_sprite_batch()
 {
     _state.spritebatch.ctr = 0;
 }
 
 
-/*******************************************************************************
+/**
  * Draws rectangle to screen.
  * 
  * INPUT:
  * Rect -- Rectangle coordinates
  * 
  * OUTPUT: none
- ******************************************************************************/
+ */
 void MCR_draw_rect(Rect rect, RGBColor color)
 {
     SDL_SetRenderDrawColor(_state.renderer, color.r, color.g, color.b, 255);
@@ -193,13 +193,13 @@ void MCR_draw_rect(Rect rect, RGBColor color)
 }
 
 
-/*******************************************************************************
+/**
  * Main rendering entry point. Renders elements in proper order.
  * 
  * INPUT: none
  * 
  * OUTPUT: none
- ******************************************************************************/
+ */
 void render(void (*render_callback)())
 {
     SDL_RenderClear(_state.renderer);
@@ -212,7 +212,7 @@ void render(void (*render_callback)())
 }
 
 
-/*******************************************************************************
+/**
  * Adds element to sprite batch.
  * 
  * INPUT:
@@ -220,7 +220,7 @@ void render(void (*render_callback)())
  * Rect   -- Position rect where sprite will be rendered on screen
  * 
  * OUTPUT: none
- ******************************************************************************/
+ */
 void MCR_push_sprite(char *key, Rect rect)
 {
     if(_state.spritebatch.ctr < MAX_DRAW_BATCH) {
@@ -233,7 +233,7 @@ void MCR_push_sprite(char *key, Rect rect)
 }
 
 
-/*******************************************************************************
+/**
  * Sets pointer with total number of tiles that can be rendered in X and Y 
  * planes.
  * 
@@ -241,7 +241,7 @@ void MCR_push_sprite(char *key, Rect rect)
  * int * -- Pointer to int[2] where index 0 is X and index 1 is Y
  * 
  * OUTPUT: none
- ******************************************************************************/
+ */
 void MCR_get_output_tiles(int *dimensions)
 {
     SDL_GetRendererOutputSize(_state.renderer, &dimensions[0], &dimensions[1]);
@@ -251,14 +251,14 @@ void MCR_get_output_tiles(int *dimensions)
 }
 
 
-/*******************************************************************************
+/**
  * Allow default system cursor to be overridden.
  * 
  * INPUT:
  * char * -- Path to image
  * 
  * OUTPUT: none
- ******************************************************************************/
+ */
 void MCR_set_cursor(char *image)
 {
     SDL_Surface *loading_surface;
@@ -273,18 +273,18 @@ void MCR_set_cursor(char *image)
 }
 
 
-/*******************************************************************************
+/**
  * Proxy to add UI button
  * 
  * See micro_ui_manager::push_ui_button
- ******************************************************************************/
+ */
 void MCR_push_ui_button(uint32 x, uint32 y, uint32 w, uint32 h, char *id, char *text)
 {
     create_button(x, y, w, h, id, text);
 }
 
 
-/*******************************************************************************
+/**
  * Proxy to get button dimensions.
  * 
  * INPUT:
@@ -293,7 +293,7 @@ void MCR_push_ui_button(uint32 x, uint32 y, uint32 w, uint32 h, char *id, char *
  * int *  -- Max render height to write back to
  * 
  * OUTPUT: none
- ******************************************************************************/
+ */
 void MCR_get_button_dimensions(char *id, int *max_width, int *max_height)
 {
     Button *button = get_button_by_id(id);
@@ -303,7 +303,7 @@ void MCR_get_button_dimensions(char *id, int *max_width, int *max_height)
 }
 
 
-/*******************************************************************************
+/**
  * Proxy to register button callback, associating button by ID.
  * 
  * INPUT:
@@ -311,7 +311,7 @@ void MCR_get_button_dimensions(char *id, int *max_width, int *max_height)
  * void * -- Callback for button click event
  * 
  * OUTPUT: none
- ******************************************************************************/
+ */
 void MCR_register_button_callback(char *id, void (*callback)())
 {
     Button *button = get_button_by_id(id);
@@ -321,7 +321,7 @@ void MCR_register_button_callback(char *id, void (*callback)())
 }
 
 
-/*******************************************************************************
+/**
  * Primary entry point for input device event handling.
  * 
  * INPUT:
@@ -330,7 +330,7 @@ void MCR_register_button_callback(char *id, void (*callback)())
  * void *    -- Callback for client mouse handling
  * 
  * OUTPUT: none
- ******************************************************************************/
+ */
 void handle_events(
     SDL_Event event, 
     void (*keyboard_callback)(char sym, int down),
@@ -389,27 +389,27 @@ void handle_events(
 }
 
 
-/*******************************************************************************
+/**
  * Quit event used by client to end game loop.
  * 
  * INPUT: none
  * 
  * OUTPUT: none
- ******************************************************************************/
+ */
 void MRC_quit()
 {
     _state.running = 0;
 }
 
 
-/*******************************************************************************
+/**
  * Main entry for subsystem updates.
  * 
  * INPUT:
  * void * -- Callback function to client update process
  * 
  * OUTPUT: none
- ******************************************************************************/
+ */
 void update(void (*update_callback)())
 {
     update_ui(&_state);
@@ -417,7 +417,7 @@ void update(void (*update_callback)())
 }
 
 
-/*******************************************************************************
+/**
  * Main entry point into engine.
  * 
  * INPUT:
@@ -425,7 +425,7 @@ void update(void (*update_callback)())
  * void * -- Callback for client to handle keyboard input
  * 
  * OUTPUT: none
- ******************************************************************************/
+ */
 void MCR_run(
     void (*update_callback)(), 
     void (*render_callback)(),
