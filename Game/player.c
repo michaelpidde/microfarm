@@ -18,43 +18,6 @@ void init_player()
 
 
 /**
- * Determines if player is going to collide with a world object in next
- * movement in given direction.
- * 
- * INPUT:
- * Direction -- Direction of player movement
- * int       -- Amount of pixels to try to move to
- * 
- * OUTPUT:
- * Rect *    -- World object collided with
- */
-Rect *check_collision(Direction direction, int increment)
-{
-    // TODO: Remove hard coded size
-    Rect player = {
-        .x = _state.player.position.x,
-        .y = _state.player.position.y,
-        .w = PLAYER_W,
-        .h = PLAYER_H
-    };
-    if(direction == North || direction == South) {
-        player.y += increment;
-    } else {
-        player.x += increment;
-    }
-
-    for(int i = 0; i < _state.collision_rect_ctr; ++i) {
-        Rect *collision = &_state.collision_rects[i];
-        if(MCR_rect_overlap(&player, collision)) {
-            return collision;
-        }
-    }
-
-    return NULL;
-}
-
-
-/**
  * Increment player position on 2D grid
  * 
  * INPUT:
@@ -65,7 +28,20 @@ Rect *check_collision(Direction direction, int increment)
 void player_move(Direction direction)
 {
     int increment = direction_to_increment(direction);
-    Rect *collided_with = check_collision(direction, increment * _state.player.speed);
+
+    Rect next_position = {
+        .x = _state.player.position.x,
+        .y = _state.player.position.y,
+        .w = PLAYER_W,
+        .h = PLAYER_H
+    };
+    if(direction == North || direction == South) {
+        next_position.y += increment * _state.player.speed;
+    } else {
+        next_position.x += increment * _state.player.speed;
+    }
+
+    Rect *collided_with = MCR_check_collision(next_position);
     if(!collided_with) {
         _state.player.velocity = increment;
         switch(direction) {

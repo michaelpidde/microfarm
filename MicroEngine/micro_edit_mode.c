@@ -1,6 +1,27 @@
 #include "micro_engine.h"
 
 
+typedef struct EditState {
+    int show_collision;
+} EditState;
+
+EditState _edit_state;
+State *_game_state;
+
+
+/**
+ * Toggles display of bounding boxes around collision rectangles.
+ * 
+ * INPUT: none
+ * 
+ * OUTPUT: none
+ */
+void toggle_collision_view()
+{
+    _edit_state.show_collision = !_edit_state.show_collision;
+}
+
+
 /**
  * Sets up editor with all its elements.
  * 
@@ -9,9 +30,10 @@
  * 
  * OUTPUT: none
  */
-void init_editor(SDL_Renderer *renderer)
+void init_editor(State *game_state)
 {
-    load_asset_class(renderer, "res\\icons", "res_icon");
+    _game_state = game_state;
+    load_asset_class(game_state->renderer, "res\\icons", "res_icon");
 
     int x = 10;
     int y = 10;
@@ -20,11 +42,13 @@ void init_editor(SDL_Renderer *renderer)
     int width, height;
     Button *button = create_button(x, y, 0, 0, "collision", "Collision");
     button->container = container;
+    register_button_callback(button, &toggle_collision_view);
+
     get_button_dimensions(button, &width, &height);
     x += width + 10;
     button = create_button(x, y, 0, 0, "lights", "Lights");
     button->container = container;
-    // register_button_callback(button, &stupid_callback);
+
     get_button_dimensions(button, &width, &height);
     x += width + 10;
     button = create_button(x, y, 0, 0, "paint", "Paint");
@@ -57,5 +81,24 @@ void toggle_editor(int showing)
     b = get_button_by_id("paint");
     if(b) {
         b->showing = showing;
+    }
+}
+
+
+/**
+ * Render conditional editor overlays.
+ * 
+ * INPUT: none
+ * 
+ * OUTPUT: none
+ */
+void render_edit_mode()
+{
+    if(_edit_state.show_collision) {
+        RGBColor outline = {.r = 255, .g = 0, .b = 0};
+        // Outline collision shapes
+        for(int i = 0; i < _game_state->collision_objects.ctr; ++i) {
+            MCR_draw_rect(_game_state->collision_objects.rects[i], outline);
+        }
     }
 }

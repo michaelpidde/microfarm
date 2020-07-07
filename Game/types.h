@@ -20,11 +20,7 @@ typedef struct KeyState {
     int d;
 } KeyState;
 
-// TODO: Make this not hard coded
-#define TOTAL_OBJECTS 50
 typedef struct State {
     Player player;
     KeyState keys_down;
-    Rect collision_rects[TOTAL_OBJECTS];
-    int collision_rect_ctr;
 } State;

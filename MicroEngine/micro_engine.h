@@ -34,6 +34,12 @@ typedef struct Controls {
     int mouse_right;
 } Controls;
 
+#define TOTAL_OBJECTS 100
+typedef struct CollisionObjects {
+    Rect rects[TOTAL_OBJECTS];
+    int ctr;
+} CollisionObjects;
+
 typedef struct State {
     SDL_Window *window;
     SDL_Renderer *renderer;
@@ -43,6 +49,7 @@ typedef struct State {
     int tile_size;
     Controls controls;
     int edit_mode;
+    CollisionObjects collision_objects;
 } State;
 
 SDL_Renderer *get_renderer();

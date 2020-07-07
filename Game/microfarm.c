@@ -18,6 +18,19 @@ State _state;
  */
 void update()
 {
+    // Add collision objects (world setup)
+    // Collision object needs to be pushed before we try to do player movement.
+    // TODO: Remove, just testing
+    Rect rock_pos = {.x = 400, .y = 400, .w = 128, .h = 128};
+    Rect rock_col = {
+        .x = rock_pos.x + 10,
+        .y = rock_pos.y + 10,
+        .w = rock_pos.w - 20,
+        .h = rock_pos.h - 60
+    };
+    MCR_push_collision_object(rock_col);
+
+    
     if(_state.keys_down.w) {
         player_move(North);
     }
@@ -46,23 +59,9 @@ void update()
         }
     }
 
-    // Add collision object
     // TODO: Remove, just testing
-    {
-        // Reset collision counter or things will go wonky.
-        _state.collision_rect_ctr = 0;
-
-        Rect rock_pos = {.x = 400, .y = 400, .w = 128, .h = 128};
-        MCR_push_sprite("world_rock", rock_pos);
-        Rect rock_col = {
-            .x = rock_pos.x + 10,
-            .y = rock_pos.y + 10,
-            .w = rock_pos.w - 20,
-            .h = rock_pos.h - 60
-        };
-        _state.collision_rects[_state.collision_rect_ctr] = rock_col;
-        ++_state.collision_rect_ctr;
-    }
+    // Add world collision ojects on top of background
+    MCR_push_sprite("world_rock", rock_pos);
 
     // Add player
     Rect rect = {.x = _state.player.position.x, .y = _state.player.position.y, .w = PLAYER_W, .h = PLAYER_H};
@@ -79,11 +78,6 @@ void update()
  */
 void render()
 {
-    RGBColor outline = {.r = 255, .g = 0, .b = 0};
-    // Outline collision shapes
-    for(int i = 0; i < _state.collision_rect_ctr; ++i) {
-        MCR_draw_rect(_state.collision_rects[i], outline);
-    }
 }
 
 

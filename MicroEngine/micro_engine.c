@@ -93,7 +93,7 @@ void MCR_init(char *title)
     init_font(_state.renderer);
     init_UI();
     #if DEBUG
-        init_editor(_state.renderer);
+        init_editor(&_state);
         toggle_editor(_state.edit_mode);
     #endif
     _state.spritebatch.ctr = 0;
@@ -206,9 +206,9 @@ void render(void (*render_callback)())
     SDL_RenderClear(_state.renderer);
 
     render_spritebatch();
-    clear_sprite_batch();
     render_callback();
     render_ui(_state.renderer);
+    render_edit_mode();
     SDL_RenderPresent(_state.renderer);
 }
 
@@ -319,6 +319,57 @@ void MCR_register_button_callback(char *id, void (*callback)())
     if(button) {
         register_button_callback(button, callback);
     }
+}
+
+
+/**
+ * Adds element to collision object collection.
+ * 
+ * INPUT:
+ * Rect -- Collision rectangle
+ * 
+ * OUTPUT: none
+ */
+void MCR_push_collision_object(Rect rect)
+{
+    _state.collision_objects.rects[_state.collision_objects.ctr] = rect;
+    ++_state.collision_objects.ctr;
+}
+
+
+/**
+ * Determines if player is going to collide with a world object in next
+ * movement in given direction.
+ * 
+ * INPUT:
+ * Rect      -- Rect to calculate collision against
+ * 
+ * OUTPUT:
+ * Rect *    -- World object collided with
+ */
+Rect *MCR_check_collision(Rect r1)
+{
+    for(int i = 0; i < _state.collision_objects.ctr; ++i) {
+        if(rect_overlap(r1, _state.collision_objects.rects[i])) {
+            return &_state.collision_objects.rects[i];
+        }
+    }
+
+    return NULL;
+}
+
+
+/**
+ * Resets collision collection. Collision rect array is not cleared, just reset the counter
+ * to overrite array positions.
+ * 
+ * INPUT: none
+ * 
+ * OUTPUT: none
+ */
+void clear_collision()
+{
+    _state.collision_objects.ctr = 0;
 }
 
 
@@ -456,6 +507,9 @@ void MCR_run(
         } else {
             Sleep(1);
         }
+
+        clear_sprite_batch();
+        clear_collision();
     }
 
     SDL_DestroyRenderer(_state.renderer);

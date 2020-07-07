@@ -34,7 +34,9 @@ void MRC_quit();
 ImEx
 void MCR_draw_rect(Rect rect, RGBColor color);
 ImEx
-int MCR_rect_overlap(Rect *r1, Rect *r2);
+Rect *MCR_check_collision(Rect r1);
+ImEx
+void MCR_push_collision_object(Rect rect);
 
 /*
  * UI
