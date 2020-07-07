@@ -13,3 +13,9 @@ typedef struct Rect {
     int w;
     int h;
 } Rect;
+
+typedef struct RGBColor {
+    unsigned int r;
+    unsigned int g;
+    unsigned int b;
+} RGBColor;

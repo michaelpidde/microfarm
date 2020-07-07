@@ -8,12 +8,6 @@
 #define MAX_CONTAINERS 20
 #define DRAG_BAR_HEIGHT 23
 
-typedef struct RGBColor {
-    unsigned int r;
-    unsigned int g;
-    unsigned int b;
-} RGBColor;
-
 typedef struct ButtonStyle {
     RGBColor base_color;
     RGBColor hover_color;

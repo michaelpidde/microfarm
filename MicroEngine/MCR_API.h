@@ -12,7 +12,7 @@
 #include "../Common/types.h"
 
 ImEx
-void MCR_init();
+void MCR_init(char *title);
 ImEx
 void MCR_set_tile_size(int size);
 ImEx
@@ -31,6 +31,10 @@ ImEx
 void MCR_set_cursor(char *icon);
 ImEx
 void MRC_quit();
+ImEx
+void MCR_draw_rect(Rect rect, RGBColor color);
+ImEx
+int MCR_rect_overlap(Rect r1, Rect r2);
 
 /*
  * UI

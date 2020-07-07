@@ -16,14 +16,26 @@ State _state;
  * 
  * OUTPUT: none
  ******************************************************************************/
-void update_callback()
+void update()
 {
-}
+    if(_state.keys_down.w) {
+        player_move(North);
+    }
+    if(_state.keys_down.a) {
+        player_move(West);
+    }
+    if(_state.keys_down.s) {
+        player_move(South);
+    }
+    if(_state.keys_down.d) {
+        player_move(East);
+    }
 
+    /*
+     * Set up sprite batch
+     */
 
-void render_callback()
-{
-    // Add background to sprite batch
+    // Add background
     int dimensions[2] = {0, 0};
     MCR_get_output_tiles(dimensions);
 
@@ -34,9 +46,37 @@ void render_callback()
         }
     }
 
-    // Add player to sprite batch
-    Rect rect = {.x = _state.player.position.x, .y = _state.player.position.y, .w = 32, .h = 64};
+    // Add collision object
+    // TODO: Remove, just testing
+    {
+        // Reset collision counter or things will go wonky.
+        _state.collision_rect_ctr = 0;
+
+        Rect rock_pos = {.x = 400, .y = 400, .w = 128, .h = 128};
+        MCR_push_sprite("world_rock", rock_pos);
+        Rect rock_col = {
+            .x = rock_pos.x + 10,
+            .y = rock_pos.y + 10,
+            .w = rock_pos.w - 20,
+            .h = rock_pos.h - 60
+        };
+        _state.collision_rects[_state.collision_rect_ctr] = rock_col;
+        ++_state.collision_rect_ctr;
+    }
+
+    // Add player
+    Rect rect = {.x = _state.player.position.x, .y = _state.player.position.y, .w = PLAYER_W, .h = PLAYER_H};
     MCR_push_sprite("actor_guy", rect);
+}
+
+
+void render()
+{
+    // RGBColor outline = {.r = 255, .g = 0, .b = 0};
+    // // Outline collision shapes
+    // for(int i = 0; i < _state.collision_rect_ctr; ++i) {
+    //     MCR_draw_rect(_state.collision_rects[i], outline);
+    // }
 }
 
 
@@ -50,7 +90,7 @@ void render_callback()
  * 
  * OUTPUT: none
  ******************************************************************************/
-void keyboard_callback(char sym, int down)
+void keyboard(char sym, int down)
 {
     switch(sym) {
         case KEY_q: {
@@ -58,22 +98,30 @@ void keyboard_callback(char sym, int down)
         } break;
         case KEY_w: {
             if(down) {
-                player_move(North);
+                _state.keys_down.w = 1;
+            } else {
+                _state.keys_down.w = 0;
             }
         } break;
         case KEY_a: {
             if(down) {
-                player_move(West);
+                _state.keys_down.a = 1;
+            } else {
+                _state.keys_down.a = 0;
             }
         } break;
         case KEY_s: {
             if(down) {
-                player_move(South);
+                _state.keys_down.s = 1;
+            } else {
+                _state.keys_down.s = 0;
             }
         } break;
         case KEY_d: {
             if(down) {
-                player_move(East);
+                _state.keys_down.d = 1;
+            } else {
+                _state.keys_down.d = 0;
             }
         } break;
     }
@@ -91,12 +139,8 @@ void keyboard_callback(char sym, int down)
  * 
  * OUTPUT: none
  ******************************************************************************/
-void mouse_callback(uint32 button, uint32 x, uint32 y, uint32 down)
+void mouse(uint32 button, uint32 x, uint32 y, uint32 down)
 {
-    char b[6] = "left";
-    if(button == 1) {
-        strcpy(b, "right");
-    }
 }
 
 
@@ -109,7 +153,7 @@ void mouse_callback(uint32 button, uint32 x, uint32 y, uint32 down)
  ******************************************************************************/
 int main()
 {
-    MCR_init();
+    MCR_init("Micro Farm");
     MCR_set_tile_size(TILE_SIZE);
 
     int loaded = MCR_load_asset_class("assets\\actor", "actor");
@@ -122,5 +166,5 @@ int main()
     // TODO: I don't like passing an image path into this since we already loaded assets. But this needs an SDL_Surface
     MCR_set_cursor("assets\\icons\\cursor.png");
 
-    MCR_run(&update_callback, &render_callback, &keyboard_callback, &mouse_callback);
+    MCR_run(&update, &render, &keyboard, &mouse);
 }

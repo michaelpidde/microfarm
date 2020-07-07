@@ -6,6 +6,7 @@
     #include "micro_edit_mode.c"
 #endif
 #include "micro_font_manager.c"
+#include "micro_math.c"
 #include "micro_ui_manager.c"
 
 State _state;
@@ -16,11 +17,12 @@ State _state;
  * 
  * INPUT:
  * State * -- Primary engine state
+ * char *  -- Title of game
  * 
  * OUTPUT:
  * int     -- Boolean success flag
  ******************************************************************************/
-int init_window(State *state)
+int init_window(State *state, char *title)
 {
     int success = 1;
     if(SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -42,12 +44,21 @@ int init_window(State *state)
         #endif
 
         state->window = SDL_CreateWindow(
-            "Micro Engine Game",
+            title,
+        #if DISPLAY_WINDOWED
+            SDL_WINDOWPOS_UNDEFINED,
+            SDL_WINDOWPOS_UNDEFINED,
+        #else
             display_bounds.x,
             display_bounds.y,
+        #endif
             800,
             600,
+        #if DISPLAY_WINDOWED
+            SDL_WINDOW_RESIZABLE
+        #else
             SDL_WINDOW_FULLSCREEN_DESKTOP
+        #endif
         );
         if(state->window == NULL) {
             printf("Failed to create game window. Error: %s\n", SDL_GetError());
@@ -70,13 +81,14 @@ int init_window(State *state)
 /*******************************************************************************
  * Engine initialization. Proxy to initialize modules.
  * 
- * INPUT: none
+ * INPUT:
+ * char * -- Title of game
  * 
  * OUTPUT: none
  ******************************************************************************/
-void MCR_init()
+void MCR_init(char *title)
 {
-    init_window(&_state);
+    init_window(&_state, title);
     init_asset_manager(_state.renderer);
     init_font(_state.renderer);
     init_UI();
@@ -130,7 +142,6 @@ int MCR_load_asset_class(char *dir, char *prefix)
 void render_spritebatch()
 {
     SDL_SetRenderDrawColor(_state.renderer, 0, 0, 0, 255);
-    SDL_RenderClear(_state.renderer);
 
     SDL_Rect src;
     src.x = 0;
@@ -163,6 +174,26 @@ void clear_sprite_batch()
 
 
 /*******************************************************************************
+ * Draws rectangle to screen.
+ * 
+ * INPUT:
+ * Rect -- Rectangle coordinates
+ * 
+ * OUTPUT: none
+ ******************************************************************************/
+void MCR_draw_rect(Rect rect, RGBColor color)
+{
+    SDL_SetRenderDrawColor(_state.renderer, color.r, color.g, color.b, 255);
+    SDL_Rect r;
+    r.x = rect.x;
+    r.y = rect.y;
+    r.w = rect.w;
+    r.h = rect.h;
+    SDL_RenderDrawRect(_state.renderer, &r);
+}
+
+
+/*******************************************************************************
  * Main rendering entry point. Renders elements in proper order.
  * 
  * INPUT: none
@@ -171,11 +202,11 @@ void clear_sprite_batch()
  ******************************************************************************/
 void render(void (*render_callback)())
 {
-    // Do client junk first.
-    render_callback();
+    SDL_RenderClear(_state.renderer);
 
     render_spritebatch();
     clear_sprite_batch();
+    render_callback();
     render_ui(_state.renderer);
     SDL_RenderPresent(_state.renderer);
 }
@@ -272,6 +303,15 @@ void MCR_get_button_dimensions(char *id, int *max_width, int *max_height)
 }
 
 
+/*******************************************************************************
+ * Proxy to register button callback, associating button by ID.
+ * 
+ * INPUT:
+ * char * -- Unique ID of button
+ * void * -- Callback for button click event
+ * 
+ * OUTPUT: none
+ ******************************************************************************/
 void MCR_register_button_callback(char *id, void (*callback)())
 {
     Button *button = get_button_by_id(id);
