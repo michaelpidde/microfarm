@@ -39,3 +39,5 @@ gcc -std=c99 -o build\microfarm.exe build\microfarm.o -Lbuild -lMicroEngine
 
 echo Compile finished %TIME%
 echo.
+
+cloc.exe .\ --exclude-dir=assets,res,_libs,.vscode,.git
