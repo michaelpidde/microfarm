@@ -7,7 +7,8 @@ static Assets _assets;
 /*******************************************************************************
  * Module initialization.
  * 
- * INPUT: none
+ * INPUT:
+ * SDL_Renderer * -- Renderer stored in engine state
  * 
  * OUTPUT: none
  ******************************************************************************/

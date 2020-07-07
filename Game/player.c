@@ -17,6 +17,17 @@ void init_player()
 }
 
 
+/*******************************************************************************
+ * Determines if player is going to collide with a world object in next
+ * movement in given direction.
+ * 
+ * INPUT:
+ * Direction -- Direction of player movement
+ * int       -- Amount of pixels to try to move to
+ * 
+ * OUTPUT:
+ * int       -- Boolean result
+ ******************************************************************************/
 int collision(Direction direction, int increment)
 {
     // TODO: Remove hard coded size
