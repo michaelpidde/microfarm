@@ -12,7 +12,7 @@ void init_player()
     _state.player.asset_key = "actor_player";
     _state.player.position.x = 100;
     _state.player.position.y = 100;
-    _state.player.speed = 5;
+    _state.player.speed = 7;
     _state.player.velocity = 0;
 }
 
@@ -26,9 +26,9 @@ void init_player()
  * int       -- Amount of pixels to try to move to
  * 
  * OUTPUT:
- * int       -- Boolean result
+ * Rect *    -- World object collided with
  */
-int collision(Direction direction, int increment)
+Rect *check_collision(Direction direction, int increment)
 {
     // TODO: Remove hard coded size
     Rect player = {
@@ -44,13 +44,13 @@ int collision(Direction direction, int increment)
     }
 
     for(int i = 0; i < _state.collision_rect_ctr; ++i) {
-        Rect collision = _state.collision_rects[i];
-        if(MCR_rect_overlap(player, collision)) {
-            return 1;
+        Rect *collision = &_state.collision_rects[i];
+        if(MCR_rect_overlap(&player, collision)) {
+            return collision;
         }
     }
-    
-    return 0;
+
+    return NULL;
 }
 
 
@@ -65,7 +65,8 @@ int collision(Direction direction, int increment)
 void player_move(Direction direction)
 {
     int increment = direction_to_increment(direction);
-    if(!collision(direction, increment * _state.player.speed)) {
+    Rect *collided_with = check_collision(direction, increment * _state.player.speed);
+    if(!collided_with) {
         _state.player.velocity = increment;
         switch(direction) {
             case North:
@@ -75,6 +76,23 @@ void player_move(Direction direction)
             case East:
             case West: {
                 _state.player.position.x += _state.player.velocity * _state.player.speed;
+            } break;
+        }
+    } else {
+        // Move player to be flush against collision object with 1 pixel buffer so movement in other directions
+        // does not get stuck.
+        switch(direction) {
+            case North: {
+                _state.player.position.y = collided_with->y + collided_with->h + 1;
+            } break;
+            case South: {
+                _state.player.position.y = collided_with->y - PLAYER_H - 1;
+            } break;
+            case East: {
+                _state.player.position.x = collided_with->x - PLAYER_W - 1;
+            } break;
+            case West: {
+                _state.player.position.x = collided_with->x + collided_with->w + 1;
             } break;
         }
     }

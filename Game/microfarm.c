@@ -79,11 +79,11 @@ void update()
  */
 void render()
 {
-    // RGBColor outline = {.r = 255, .g = 0, .b = 0};
-    // // Outline collision shapes
-    // for(int i = 0; i < _state.collision_rect_ctr; ++i) {
-    //     MCR_draw_rect(_state.collision_rects[i], outline);
-    // }
+    RGBColor outline = {.r = 255, .g = 0, .b = 0};
+    // Outline collision shapes
+    for(int i = 0; i < _state.collision_rect_ctr; ++i) {
+        MCR_draw_rect(_state.collision_rects[i], outline);
+    }
 }
 
 

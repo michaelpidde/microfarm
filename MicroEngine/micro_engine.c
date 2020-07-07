@@ -177,7 +177,8 @@ void clear_sprite_batch()
  * Draws rectangle to screen.
  * 
  * INPUT:
- * Rect -- Rectangle coordinates
+ * Rect     -- Rectangle coordinates
+ * RGBColor -- Rectangle line color
  * 
  * OUTPUT: none
  */
