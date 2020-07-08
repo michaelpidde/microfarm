@@ -3,16 +3,6 @@
 #include "../Common/types.h"
 
 
-/**
- * Determine whether there is collision between two rectangles.
- * 
- * INPUT:
- * Rect -- First rectangle
- * Rect -- Second rectangle
- * 
- * OUTPUT:
- * int  -- Boolean result
- */
 int rect_overlap(Rect r1, Rect r2) {
     if(r1.x <= r2.x + r2.w &&
         r1.x + r1.w >= r2.x &&

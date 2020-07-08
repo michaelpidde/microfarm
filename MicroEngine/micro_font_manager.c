@@ -22,13 +22,6 @@ Fonts _fonts;
 FontState *_selected_font;
 
 
-/**
- * Initialize font writer to contain default engine fonts.
- * 
- * INPUT: none
- * 
- * OUTPUT: none
- */
 void init_font(SDL_Renderer *renderer)
 {
     load_asset_class(renderer, "res\\fonts", "res_font");
@@ -47,18 +40,6 @@ void init_font(SDL_Renderer *renderer)
 }
 
 
-/**
- * Takes a single word and renders it character by character.
- * 
- * INPUT:
- * SDL_Renderer * -- Renderer stored in engine state
- * char *         -- Word to render
- * int            -- X position on screen
- * int            -- Y position on screen
- * 
- * OUTPUT:
- * int            -- Width of the word that was rendered.
- */
 int render_word(SDL_Renderer *renderer, char *word, int cursor_x, int cursor_y) {
 	int len = strlen(word);
 	int word_width = 0;
@@ -72,17 +53,6 @@ int render_word(SDL_Renderer *renderer, char *word, int cursor_x, int cursor_y) 
 }
 
 
-/**
- * Tries to find index of integer in array of integers.
- * 
- * INPUT:
- * int   -- Integer to search for
- * int * -- Array to search in
- * int   -- Size of search array
- * 
- * OUTPUT:
- * int   -- Index of found integer. -1 if not found.
- */
 int index_of_int(int search, int *array, int array_size)
 {
 	for(int i = 0; i < array_size; i++) {
@@ -94,15 +64,6 @@ int index_of_int(int search, int *array, int array_size)
 }
 
 
-/**
- * Gets structure containing information about a character in a glyphmap.
- * 
- * INPUT:
- * char  -- The character to get information about
- * 
- * OUTPUT:
- * Glyph -- Structure of character information
- */
 Glyph get_glyph(char ch)
 {
 	int index = index_of_int((int)ch, _selected_font->id_link, GLYPH_COUNT);
@@ -112,18 +73,6 @@ Glyph get_glyph(char ch)
 }
 
 
-/**
- * 
- * 
- * INPUT:
- * SDL_Renderer * -- Renderer stored in engine state
- * char           -- Character to render
- * int            -- X position on screen
- * int            -- Y posiiton on screen
- * 
- * OUTPUT:
- * int            -- Xadvance to keep track of how much space was used.
- */
 int draw_character(SDL_Renderer *renderer, char ch, int cursor_x, int cursor_y)
 {
 	Glyph glyph = get_glyph(ch);
@@ -150,15 +99,6 @@ int draw_character(SDL_Renderer *renderer, char ch, int cursor_x, int cursor_y)
 }
 
 
-/**
- * Gets total render width of word based on glyph sizes.
- * 
- * INPUT:
- * char * -- Word to get render width of
- * 
- * OUTPUT:
- * int    -- Render width
- */
 int get_word_width(char *word)
 {
 	int len = strlen(word);
@@ -172,14 +112,6 @@ int get_word_width(char *word)
 }
 
 
-/**
- * Set reference to font for subsequent render operations.
- * 
- * INPUT:
- * char * -- Unique name of font
- * 
- * OUTPUT: none
- */
 void set_font(char *font)
 {
 	int index = 0;

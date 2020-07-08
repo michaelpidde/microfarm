@@ -4,14 +4,6 @@
 static Assets _assets;
 
 
-/**
- * Module initialization.
- * 
- * INPUT:
- * SDL_Renderer * -- Renderer stored in engine state
- * 
- * OUTPUT: none
- */
 void init_asset_manager(SDL_Renderer *renderer)
 {
     _assets.renderer = renderer;
@@ -19,16 +11,6 @@ void init_asset_manager(SDL_Renderer *renderer)
 }
 
 
-/**
- * Find character in string.
- * 
- * INPUT:
- * char   -- The character to search for
- * char * -- The string to search in
- * 
- * OUTPUT:
- * int    -- The index of needle, if found, otherwise -1
- */
 int str_find(char needle, char *haystack) {
     char * find = strrchr(haystack, needle);
     if(find != NULL) {
@@ -38,17 +20,6 @@ int str_find(char needle, char *haystack) {
 }
 
 
-/**
- * Get texture from loaded assets dictionary by unique name. This function will
- * return a dud texture in the event that the requested asset is not found. This
- * will visually indicate that there is a missing asset.
- * 
- * INPUT:
- * char *      -- unique name of asset to look for
- * 
- * OUTPUT:
- * SDL_Texture -- Asset texture
- */
 SDL_Texture *get_asset(char *key) {
     int pos = -1;
     for(int i = 0; i < _assets.ctr; ++i) {
@@ -79,17 +50,6 @@ SDL_Texture *get_asset(char *key) {
 }
 
 
-/**
- * 
- * 
- * INPUT:
- * SDL_Renderer -- Renderer stored in engine state
- * char *       -- Directory path to load assets from
- * char *       -- Prefix for unique keys to reference assets by
- * 
- * OUTPUT:
- * int          -- Number of assets loaded
- */
 int load_asset_class(SDL_Renderer *renderer, char *dir, char *prefix)
 {
     char *files[MAX_DIR_FILES];

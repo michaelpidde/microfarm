@@ -1,4 +1,5 @@
 #include "micro_engine.h"
+#include "ui_elements/drag_container.h"
 
 
 typedef struct EditState {
@@ -9,27 +10,12 @@ EditState _edit_state;
 State *_game_state;
 
 
-/**
- * Toggles display of bounding boxes around collision rectangles.
- * 
- * INPUT: none
- * 
- * OUTPUT: none
- */
-void toggle_collision_view()
+void toggle_collision_bounding_boxes()
 {
     _edit_state.show_collision = !_edit_state.show_collision;
 }
 
 
-/**
- * Sets up editor with all its elements.
- * 
- * INPUT:
- * SDL_Renderer * -- Renderer stored in engine state
- * 
- * OUTPUT: none
- */
 void init_editor(State *game_state)
 {
     _game_state = game_state;
@@ -42,7 +28,7 @@ void init_editor(State *game_state)
     int width, height;
     Button *button = create_button(x, y, 0, 0, "collision", "Collision");
     button->container = container;
-    register_button_callback(button, &toggle_collision_view);
+    register_button_callback(button, &toggle_collision_bounding_boxes);
 
     get_button_dimensions(button, &width, &height);
     x += width + 10;
@@ -56,42 +42,27 @@ void init_editor(State *game_state)
 }
 
 
-/**
- * Shows or hides the editor elements.
- * 
- * INPUT:
- * int -- Boolean indicating whether elements should be showing
- * 
- * OUTPUT: none
- */
 void toggle_editor(int showing)
 {
     DragContainer *dc = get_container_by_id("toolbar");
     if(dc) {
         dc->showing = showing;
     }
-    Button *b = get_button_by_id("collision");
+    Button *b = get_button("collision");
     if(b) {
         b->showing = showing;
     }
-    b = get_button_by_id("lights");
+    b = get_button("lights");
     if(b) {
         b->showing = showing;
     }
-    b = get_button_by_id("paint");
+    b = get_button("paint");
     if(b) {
         b->showing = showing;
     }
 }
 
 
-/**
- * Render conditional editor overlays.
- * 
- * INPUT: none
- * 
- * OUTPUT: none
- */
 void render_edit_mode()
 {
     if(_edit_state.show_collision) {

@@ -29,6 +29,14 @@ void update()
         .h = rock_pos.h - 60
     };
     MCR_push_collision_object(rock_col);
+    Rect rock2_pos = {.x = 700, .y = 400, .w = 64, .h = 64};
+    Rect rock2_col = {
+        .x = rock2_pos.x + 10,
+        .y = rock2_pos.y + 10,
+        .w = rock2_pos.w - 20,
+        .h = rock2_pos.h - 50
+    };
+    MCR_push_collision_object(rock2_col);
 
     
     if(_state.keys_down.w) {
@@ -62,6 +70,7 @@ void update()
     // TODO: Remove, just testing
     // Add world collision ojects on top of background
     MCR_push_sprite("world_rock", rock_pos);
+    MCR_push_sprite("world_rock2", rock2_pos);
 
     // Add player
     Rect rect = {.x = _state.player.position.x, .y = _state.player.position.y, .w = PLAYER_W, .h = PLAYER_H};
