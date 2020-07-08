@@ -14,8 +14,8 @@ typedef struct UI_State {
     uint32 last_mouse_y;
 } UI_State;
 
-Button *create_button(uint32 x, uint32 y, uint32 w, uint32 h, char *id, char *text);
+Button *create_button(Rect position, char *id, char *text);
 void get_button_dimensions(Button *button, int *max_width, int *max_height);
 Button *get_button(char *id);
-DragContainer *create_container(uint32 x, uint32 y, uint32 w, uint32 h, char *id);
+DragContainer *create_container(Rect position, char *id);
 DragContainer *get_container_by_id(char *id);

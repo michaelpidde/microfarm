@@ -15,15 +15,16 @@ typedef struct ContainerStyle {
 } ContainerStyle;
 
 typedef struct DragContainer {
-    uint32 x;
-    uint32 y;
-    uint32 w;
-    uint32 h;
+    Rect position;
     ContainerStyle style;
     ElementState dragbar_state;
     char id[KEY_LENGTH];
     int showing;
 } DragContainer;
+
+typedef struct SelectBox {
+
+} SelectBox;
 
 /**
  * Adaptive: Uses element width and height as starting values but will expand to
@@ -49,10 +50,7 @@ typedef struct ButtonStyle {
 
 typedef struct Button {
     char text[MAX_BUTTON_TEXT];
-    uint32 x;
-    uint32 y;
-    uint32 w;
-    uint32 h;
+    Rect position;
     char id[KEY_LENGTH];
     ButtonStyle style;
     ElementState state;

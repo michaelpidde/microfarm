@@ -180,9 +180,9 @@ void MCR_set_cursor(char *image)
 }
 
 
-void MCR_push_ui_button(uint32 x, uint32 y, uint32 w, uint32 h, char *id, char *text)
+void MCR_push_ui_button(Rect position, char *id, char *text)
 {
-    create_button(x, y, w, h, id, text);
+    create_button(position, id, text);
 }
 
 

@@ -25,10 +25,10 @@ Button *get_button(char *id)
 }
 
 
-Button *create_button(uint32 x, uint32 y, uint32 w, uint32 h, char *id, char *text)
+Button *create_button(Rect position, char *id, char *text)
 {
     if(_ui_state.button_ctr < MAX_BUTTONS) {
-        Button b = _create_button(x, y, w, h, id, text);
+        Button b = _create_button(position, id, text);
         _ui_state.buttons[_ui_state.button_ctr] = b;
         ++_ui_state.button_ctr;
         return &_ui_state.buttons[_ui_state.button_ctr - 1];
@@ -44,10 +44,10 @@ void get_button_dimensions(Button *button, int *max_width, int *max_height)
 }
 
 
-DragContainer *create_container(uint32 x, uint32 y, uint32 w, uint32 h, char *id)
+DragContainer *create_container(Rect position, char *id)
 {
     if(_ui_state.container_ctr < MAX_CONTAINERS) {
-        DragContainer dc = _create_container(x, y, w, h, id);
+        DragContainer dc = _create_container(position, id);
         _ui_state.containers[_ui_state.container_ctr] = dc;
         ++_ui_state.container_ctr;
         return &_ui_state.containers[_ui_state.container_ctr - 1];
@@ -112,8 +112,8 @@ void update_ui(State *gamestate)
                     // move_x and move_y will be positive for up/left movement and negative for down/right movement. Ex:
                     // x = 100. Move left 5 pixels. x = 100 - 5.
                     // x = 100. Move right 5 pixels. x = 100 - (-5).
-                    container->x -= move_x;
-                    container->y -= move_y;
+                    container->position.x -= move_x;
+                    container->position.y -= move_y;
                 } else {
                     container->dragbar_state = Hover;
                 }
@@ -136,14 +136,14 @@ void update_ui(State *gamestate)
             get_button_dimensions(button, &max_width, &max_height);
 
             // Real X and Y account for relative positioning inside of a container.
-            int real_x = button->x;
-            int real_y = button->y;
+            int real_x = button->position.x;
+            int real_y = button->position.y;
             if(button->container) {
-                real_x = button->container->x + button->container->style.padding + button->x;
-                real_y = button->container->y +
+                real_x = button->container->position.x + button->container->style.padding + button->position.x;
+                real_y = button->container->position.y +
                     get_drag_bar_position(button->container).h +
                     button->container->style.padding +
-                    button->y;
+                    button->position.y;
             }
 
             int left = real_x;

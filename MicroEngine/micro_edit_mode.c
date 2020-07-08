@@ -21,23 +21,29 @@ void init_editor(State *game_state)
     _game_state = game_state;
     load_asset_class(game_state->renderer, "res\\icons", "res_icon");
 
-    int x = 10;
-    int y = 10;
-    DragContainer *container = create_container(x, y, 200, 500, "toolbar");
+    Rect position;
+    position.x = 10;
+    position.y = 10;
+    position.w = 200;
+    position.h = 500;
+    DragContainer *container = create_container(position, "toolbar");
 
     int width, height;
-    Button *button = create_button(x, y, 0, 0, "collision", "Collision");
+    Rect button_position;
+    button_position.x = position.x;
+    button_position.y = position.y;
+    Button *button = create_button(button_position, "collision", "Collision");
     button->container = container;
     register_button_callback(button, &toggle_collision_bounding_boxes);
 
     get_button_dimensions(button, &width, &height);
-    x += width + 10;
-    button = create_button(x, y, 0, 0, "lights", "Lights");
+    button_position.x += width + 10;
+    button = create_button(button_position, "lights", "Lights");
     button->container = container;
 
     get_button_dimensions(button, &width, &height);
-    x += width + 10;
-    button = create_button(x, y, 0, 0, "paint", "Paint");
+    button_position.x += width + 10;
+    button = create_button(button_position, "paint", "Paint");
     button->container = container;
 }
 

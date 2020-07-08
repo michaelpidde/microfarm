@@ -21,14 +21,11 @@ ButtonStyle get_default_button_style()
 }
 
 
-Button _create_button(uint32 x, uint32 y, uint32 w, uint32 h, char *id, char *text)
+Button _create_button(Rect position, char *id, char *text)
 {
     Button b;
     b.style = get_default_button_style();
-    b.x = x;
-    b.y = y;
-    b.w = w;
-    b.h = h;
+    b.position = position;
     b.state = Off;
     b.showing = 1;
     strncpy(b.id, id, KEY_LENGTH);
@@ -46,8 +43,8 @@ void _get_button_dimensions(RenderStyle render_style, Button *button, int *max_w
     int text_width = get_word_width(button->text);
     int text_height = *_selected_font->font_size;
 
-    *max_width = button->w + (button->style.border_size * 2);
-    *max_height = button->h + (button->style.border_size * 2);
+    *max_width = button->position.x + (button->style.border_size * 2);
+    *max_height = button->position.h + (button->style.border_size * 2);
     if(render_style == Adaptive) {
         *max_width = text_width + (button->style.border_size * 2) + (button->style.padding * 2);
         *max_height = text_height + (button->style.border_size * 2) + (button->style.padding * 2);
@@ -70,8 +67,8 @@ void render_button(SDL_Renderer *renderer, Button *button)
         int real_x = 0;
         int real_y = 0;
         if(button->container) {
-            real_x = button->container->x + button->container->style.padding;
-            real_y = button->container->y +
+            real_x = button->container->position.x + button->container->style.padding;
+            real_y = button->container->position.y +
                 get_drag_bar_position(button->container).h +
                 button->container->style.padding;
         }
@@ -83,8 +80,8 @@ void render_button(SDL_Renderer *renderer, Button *button)
         get_button_dimensions(button, &max_width, &max_height);
 
         // Border
-        rect.x = real_x + button->x;
-        rect.y = real_y + button->y;
+        rect.x = real_x + button->position.x;
+        rect.y = real_y + button->position.y;
         rect.w = max_width;
         rect.h = max_height;
         SDL_SetRenderDrawColor(
@@ -97,8 +94,8 @@ void render_button(SDL_Renderer *renderer, Button *button)
         SDL_RenderFillRect(renderer, &rect);
 
         // Body
-        rect.x = real_x + button->x + button->style.border_size;
-        rect.y = real_y + button->y + button->style.border_size;
+        rect.x = real_x + button->position.x + button->style.border_size;
+        rect.y = real_y + button->position.y + button->style.border_size;
         rect.w = max_width - (button->style.border_size * 2);
         rect.h = max_height - (button->style.border_size * 2);
         RGBColor *state_color = &button->style.base_color;
@@ -122,8 +119,8 @@ void render_button(SDL_Renderer *renderer, Button *button)
         // TODO: Handle clipping for Strict RenderStyle
         // Text
         SDL_Rect dest;
-        int x = real_x + button->x + button->style.border_size + button->style.padding;
-        int y = real_y + button->y + button->style.border_size + button->style.padding;
+        int x = real_x + button->position.x + button->style.border_size + button->style.padding;
+        int y = real_y + button->position.y + button->style.border_size + button->style.padding;
         render_word(renderer, button->text, x, y);
     }
 }

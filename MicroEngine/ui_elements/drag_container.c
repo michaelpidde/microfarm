@@ -1,4 +1,5 @@
 #include "drag_container.h"
+#include "../cast.h"
 
 
 ContainerStyle get_default_container_style()
@@ -14,14 +15,11 @@ ContainerStyle get_default_container_style()
 }
 
 
-DragContainer _create_container(uint32 x, uint32 y, uint32 w, uint32 h, char *id)
+DragContainer _create_container(Rect position, char *id)
 {
     DragContainer dc;
     dc.style = get_default_container_style();
-    dc.x = x;
-    dc.y = y;
-    dc.w = w;
-    dc.h = h;
+    dc.position = position;
     dc.showing = 1;
     dc.dragbar_state = Off;
     strcpy(dc.id, id);
@@ -32,10 +30,10 @@ DragContainer _create_container(uint32 x, uint32 y, uint32 w, uint32 h, char *id
 Rect get_drag_bar_position(DragContainer *container)
 {
     Rect dimensions;
-    dimensions.x = container->x + container->style.border_size;
-    dimensions.y = container->y + container->style.border_size;
+    dimensions.x = container->position.x + container->style.border_size;
+    dimensions.y = container->position.y + container->style.border_size;
     dimensions.h = DRAG_BAR_HEIGHT;
-    dimensions.w = container->w - (container->style.border_size * 2);
+    dimensions.w = container->position.w - (container->style.border_size * 2);
     return dimensions;
 }
 
@@ -43,13 +41,9 @@ Rect get_drag_bar_position(DragContainer *container)
 void render_container(SDL_Renderer *renderer, DragContainer *container)
 {
     if(container->showing) {
-        SDL_Rect rect;
+        SDL_Rect rect = to_SDL_Rect(container->position);
 
         // Border
-        rect.x = container->x;
-        rect.y = container->y;
-        rect.h = container->h;
-        rect.w = container->w;
         SDL_SetRenderDrawColor(
             renderer,
             container->style.border_color.r,
@@ -60,10 +54,10 @@ void render_container(SDL_Renderer *renderer, DragContainer *container)
         SDL_RenderFillRect(renderer, &rect);
 
         // Body
-        rect.x = container->x + container->style.border_size;
-        rect.y = container->y + container->style.border_size;
-        rect.w = container->w - (container->style.border_size * 2);
-        rect.h = container->h - (container->style.border_size * 2);
+        rect.x += container->style.border_size;
+        rect.y += container->style.border_size;
+        rect.w -= (container->style.border_size * 2);
+        rect.h -= (container->style.border_size * 2);
         SDL_SetRenderDrawColor(
             renderer,
             container->style.base_color.r,
