@@ -60,21 +60,29 @@ void update()
     int dimensions[2] = {0, 0};
     MCR_get_output_tiles(dimensions);
 
+    Rect src = {.x = 0, .y = 0, .w = TILE_SIZE, .h = TILE_SIZE};
+    Rect dest = {.x = 0, .y = 0, .w = TILE_SIZE, .h = TILE_SIZE};
     for(int row = 0; row < dimensions[1]; ++row) {
         for(int col = 0; col < dimensions[0]; ++col) {
-            Rect r = {.x = col * TILE_SIZE, .y = row * TILE_SIZE, .w = TILE_SIZE, .h = TILE_SIZE};
-            MCR_push_sprite("world_terrain", r);
+            dest.x = col * TILE_SIZE;
+            dest.y = row * TILE_SIZE;
+            MCR_push_sprite("world_terrain", src, dest);
         }
     }
 
     // TODO: Remove, just testing
     // Add world collision ojects on top of background
-    MCR_push_sprite("world_rock", rock_pos);
-    MCR_push_sprite("world_rock2", rock2_pos);
+    src.w = 128;
+    src.h = 128;
+    MCR_push_sprite("world_rock", src, rock_pos);
+    src.w = TILE_SIZE;
+    src.h = TILE_SIZE;
+    MCR_push_sprite("world_rock2", src, rock2_pos);
 
     // Add player
+    Rect player_src = {.x = 0, .y = 0, .w = PLAYER_W, .h = PLAYER_H};
     Rect rect = {.x = _state.player.position.x, .y = _state.player.position.y, .w = PLAYER_W, .h = PLAYER_H};
-    MCR_push_sprite("actor_guy", rect);
+    MCR_push_sprite(_state.player.asset_key, player_src, rect);
 }
 
 

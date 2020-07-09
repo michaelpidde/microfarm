@@ -100,16 +100,10 @@ void render_spritebatch()
     SDL_SetRenderDrawColor(_state.renderer, 0, 0, 0, 255);
 
     SDL_Rect src;
-    src.x = 0;
-    src.y = 0;
     SDL_Rect dest; 
     for(int i = 0; i < _state.spritebatch.ctr; ++i) {
-        src.w = _state.spritebatch.locations[i].w;
-        src.h = _state.spritebatch.locations[i].h;
-        dest.x = _state.spritebatch.locations[i].x;
-        dest.y = _state.spritebatch.locations[i].y;
-        dest.w = _state.spritebatch.locations[i].w;
-        dest.h = _state.spritebatch.locations[i].h;
+        src = to_SDL_Rect(_state.spritebatch.src[i]);
+        dest = to_SDL_Rect(_state.spritebatch.dest[i]);
         SDL_RenderCopy(_state.renderer, get_asset(_state.spritebatch.keys[i]), &src, &dest);
     }
 }
@@ -145,11 +139,12 @@ void render(void (*render_callback)())
 }
 
 
-void MCR_push_sprite(char *key, Rect rect)
+void MCR_push_sprite(char *key, Rect src, Rect dest)
 {
     if(_state.spritebatch.ctr < MAX_DRAW_BATCH) {
         strcpy(_state.spritebatch.keys[_state.spritebatch.ctr], key);
-        _state.spritebatch.locations[_state.spritebatch.ctr] = rect;
+        _state.spritebatch.src[_state.spritebatch.ctr] = src;
+        _state.spritebatch.dest[_state.spritebatch.ctr] = dest;
         ++_state.spritebatch.ctr;
     } else {
         // TODO: Log this or something

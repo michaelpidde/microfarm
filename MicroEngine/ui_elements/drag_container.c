@@ -2,9 +2,9 @@
 #include "../cast.h"
 
 
-ContainerStyle get_default_container_style()
+ElementStyle get_default_container_style()
 {
-    ContainerStyle cs;
+    ElementStyle cs;
     RGBColor base = {.r = 248, .g = 232, .b = 218};
     RGBColor border = {.r = 213, .g = 120, .b = 36};
     cs.base_color = base;

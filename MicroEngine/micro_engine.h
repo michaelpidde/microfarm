@@ -25,7 +25,8 @@ double win32_get_time(double freq);
 
 typedef struct SpriteBatch {
     char keys[MAX_DRAW_BATCH][KEY_LENGTH];
-    Rect locations[MAX_DRAW_BATCH];
+    Rect src[MAX_DRAW_BATCH];
+    Rect dest[MAX_DRAW_BATCH];
     int ctr;
 } SpriteBatch;
 

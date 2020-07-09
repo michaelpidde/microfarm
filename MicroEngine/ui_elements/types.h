@@ -7,23 +7,29 @@ typedef enum ElementState {
     Off, Hover, Click
 } ElementState;
 
-typedef struct ContainerStyle {
+typedef struct ElementStyle {
     RGBColor base_color;
     RGBColor border_color;
     uint32 border_size;
     uint32 padding;
-} ContainerStyle;
+} ElementStyle;
 
 typedef struct DragContainer {
     Rect position;
-    ContainerStyle style;
+    ElementStyle style;
     ElementState dragbar_state;
     char id[KEY_LENGTH];
     int showing;
 } DragContainer;
 
 typedef struct SelectBox {
-
+    Rect position;
+    ElementStyle style;
+    int selected;
+    char keys[MAX_SELECT_ELEMENTS][KEY_LENGTH];
+    char values[MAX_SELECT_ELEMENTS][KEY_LENGTH];
+    int element_ctr;
+    int showing;
 } SelectBox;
 
 /**

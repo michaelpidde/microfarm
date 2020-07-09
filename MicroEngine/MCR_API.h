@@ -24,7 +24,7 @@ void MCR_run(
     void (*keyboard_callback)(char sym, int down), 
     void (*mouse_callback)(uint32 button, uint32 x, uint32 y, uint32 down));
 ImEx
-void MCR_push_sprite(char *key, Rect rect);
+void MCR_push_sprite(char *key, Rect src, Rect dest);
 ImEx
 void MCR_get_output_tiles(int *dimensions);
 ImEx
