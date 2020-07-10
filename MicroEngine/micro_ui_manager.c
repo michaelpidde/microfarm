@@ -3,6 +3,7 @@
 #include "cast.h"
 #include "ui_elements/button.c"
 #include "ui_elements/drag_container.c"
+#include "ui_elements/selectbox.c"
 
 
 UI_State _ui_state;
@@ -44,6 +45,12 @@ void get_button_dimensions(Button *button, int *max_width, int *max_height)
 }
 
 
+void get_selectbox_dimensions(SelectBox *sb, int *max_width, int *max_height)
+{
+    _get_selectbox_dimensions(_ui_state.render_style, sb, max_width, max_height);
+}
+
+
 DragContainer *create_container(Rect position, char *id)
 {
     if(_ui_state.container_ctr < MAX_CONTAINERS) {
@@ -57,11 +64,34 @@ DragContainer *create_container(Rect position, char *id)
 }
 
 
-DragContainer *get_container_by_id(char *id)
+DragContainer *get_container(char *id)
 {
     for(int i = 0; i < _ui_state.container_ctr; ++i) {
         if(strcmp(id, _ui_state.containers[i].id) == 0) {
             return &_ui_state.containers[i];
+        }
+    }
+    // TODO: Figure out what to do if this doesn't return in the loop.
+}
+
+
+SelectBox *create_selectbox(Rect position, char *id, int visible_elements)
+{
+    if(_ui_state.select_ctr < MAX_SELECT_ELEMENTS) {
+        SelectBox sb = _create_selectbox(position, id, visible_elements);
+        _ui_state.selectboxes[_ui_state.select_ctr] = sb;
+        ++_ui_state.select_ctr;
+        return &_ui_state.selectboxes[_ui_state.select_ctr - 1];
+    } else {
+        error("Max number of select boxes added.\n");
+    }
+}
+
+
+SelectBox *get_selectbox(char *id) {
+    for(int i = 0; i < _ui_state.select_ctr; ++i) {
+        if(strcmp(id, _ui_state.selectboxes[i].id) == 0) {
+            return &_ui_state.selectboxes[i];
         }
     }
     // TODO: Figure out what to do if this doesn't return in the loop.
@@ -76,6 +106,10 @@ void render_ui(SDL_Renderer *renderer)
 
     for(int i = 0; i < _ui_state.button_ctr; ++i) {
         render_button(renderer, &_ui_state.buttons[i]);
+    }
+
+    for(int i = 0; i < _ui_state.button_ctr; ++i) {
+        render_selectbox(renderer, &_ui_state.selectboxes[i]);
     }
 }
 

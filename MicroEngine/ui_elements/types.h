@@ -12,6 +12,7 @@ typedef struct ElementStyle {
     RGBColor border_color;
     uint32 border_size;
     uint32 padding;
+    char font_key[KEY_LENGTH];
 } ElementStyle;
 
 typedef struct DragContainer {
@@ -25,10 +26,13 @@ typedef struct DragContainer {
 typedef struct SelectBox {
     Rect position;
     ElementStyle style;
-    int selected;
-    char keys[MAX_SELECT_ELEMENTS][KEY_LENGTH];
-    char values[MAX_SELECT_ELEMENTS][KEY_LENGTH];
+    char keys[MAX_SELECT_OPTIONS][KEY_LENGTH];
+    char values[MAX_SELECT_OPTIONS][KEY_LENGTH];
     int element_ctr;
+    int element_selected;
+    int visible_elements;
+    char id[KEY_LENGTH];
+    DragContainer *container;
     int showing;
 } SelectBox;
 

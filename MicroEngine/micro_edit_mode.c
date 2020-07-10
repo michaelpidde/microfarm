@@ -1,5 +1,4 @@
 #include "micro_engine.h"
-#include "ui_elements/drag_container.h"
 
 
 typedef struct EditState {
@@ -21,36 +20,44 @@ void init_editor(State *game_state)
     _game_state = game_state;
     load_asset_class(game_state->renderer, "res\\icons", "res_icon");
 
-    Rect position;
-    position.x = 10;
-    position.y = 10;
-    position.w = 200;
-    position.h = 500;
-    DragContainer *container = create_container(position, "toolbar");
+    Rect container_pos;
+    container_pos.x = 10;
+    container_pos.y = 10;
+    container_pos.w = 200;
+    container_pos.h = 500;
+    DragContainer *container = create_container(container_pos, "toolbar");
 
     int width, height;
-    Rect button_position;
-    button_position.x = position.x;
-    button_position.y = position.y;
-    Button *button = create_button(button_position, "collision", "Collision");
+    Rect element_pos;
+    element_pos.x = container_pos.x;
+    element_pos.y = container_pos.y;
+    Button *button = create_button(element_pos, "collision", "Collision");
     button->container = container;
     register_button_callback(button, &toggle_collision_bounding_boxes);
 
     get_button_dimensions(button, &width, &height);
-    button_position.x += width + 10;
-    button = create_button(button_position, "lights", "Lights");
+    element_pos.x += width + 10;
+    button = create_button(element_pos, "lights", "Lights");
     button->container = container;
 
     get_button_dimensions(button, &width, &height);
-    button_position.x += width + 10;
-    button = create_button(button_position, "paint", "Paint");
+    element_pos.x += width + 10;
+    button = create_button(element_pos, "paint", "Paint");
     button->container = container;
+
+    get_button_dimensions(button, &width, &height);
+    element_pos.x = container_pos.x;
+    element_pos.y += height + 10;
+    element_pos.w = 150;
+    SelectBox *select = create_selectbox(element_pos, "collision_objects", 4);
+    select->container = container;
+    add_selectbox_element(select, "rock", "Rock", 1);
 }
 
 
 void toggle_editor(int showing)
 {
-    DragContainer *dc = get_container_by_id("toolbar");
+    DragContainer *dc = get_container("toolbar");
     if(dc) {
         dc->showing = showing;
     }
@@ -65,6 +72,10 @@ void toggle_editor(int showing)
     b = get_button("paint");
     if(b) {
         b->showing = showing;
+    }
+    SelectBox *sb = get_selectbox("collision_objects");
+    if(sb) {
+        sb->showing = showing;
     }
 }
 

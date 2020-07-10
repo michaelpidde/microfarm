@@ -1,12 +1,6 @@
 #include "microfarm.h"
 
-/**
- * Set up default player data
- * 
- * INPUT: none
- * 
- * OUTPUT: none
- */
+
 void init_player()
 {
     _state.player.asset_key = "actor_guy";
@@ -17,14 +11,6 @@ void init_player()
 }
 
 
-/**
- * Increment player position on 2D grid
- * 
- * INPUT:
- * Direction -- The direction to move player
- * 
- * OUTPUT: none
- */
 void player_move(Direction direction)
 {
     int increment = direction_to_increment(direction);
