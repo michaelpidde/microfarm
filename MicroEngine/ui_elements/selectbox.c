@@ -48,7 +48,7 @@ void _get_selectbox_dimensions(RenderStyle render_style, SelectBox *sb, int *max
     // TODO: This is really stupid and I shouldn't have to do this here.
     set_font(sb->style.font_key);
 
-    int text_height = *_selected_font->font_size;
+    int text_height = font_height();
 
     *max_width = sb->position.w;
 
@@ -56,6 +56,40 @@ void _get_selectbox_dimensions(RenderStyle render_style, SelectBox *sb, int *max
     if(render_style == Adaptive) {
         *max_height = (text_height * sb->visible_elements) + (sb->style.border_size * 2) + (sb->style.padding * 2);
     }
+}
+
+
+void generate_options_image(SDL_Renderer *renderer, SelectBox *sb)
+{
+    // Set font before we start doing calculations on its size.
+    set_font(sb->style.font_key);
+
+    int w = sb->position.w;
+    int h = sb->element_ctr * font_height();
+    SDL_Texture *texture = SDL_CreateTexture(
+        renderer, SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_TARGET, w, h);
+    SDL_SetRenderTarget(renderer, texture);
+
+    // Clear to element base color.
+    SDL_Rect src;
+    src.x = 0;
+    src.y = 0;
+    src.w = w;
+    src.h = h;
+    SDL_SetRenderDrawColor(renderer, sb->style.base_color.r, sb->style.base_color.g, sb->style.base_color.b, 255);
+    SDL_RenderFillRect(renderer, &src);
+
+    SDL_Rect dest;
+    int x = 0;
+    int y = 0;
+    for(int i = 0; i < sb->element_ctr; ++i) {
+        render_word(renderer, sb->values[i], x, y);
+        y += font_height();
+    }
+    sb->options_texture = texture;
+
+    // Reset renderer to default target.
+    SDL_SetRenderTarget(renderer, NULL);
 }
 
 
@@ -110,9 +144,16 @@ void render_selectbox(SDL_Renderer *renderer, SelectBox *sb)
         SDL_RenderFillRect(renderer, &rect);
 
         // Text
-        SDL_Rect dest;
-        int x = real_x + sb->position.x + sb->style.border_size + sb->style.padding;
-        int y = real_y + sb->position.y + sb->style.border_size + sb->style.padding;
-        render_word(renderer, sb->values[0], x, y);
+        rect.x += sb->style.padding;
+        rect.y += sb->style.padding;
+        rect.w -= sb->style.padding * 2;
+        rect.h -= sb->style.padding * 2;
+
+        SDL_Rect src;
+        src.x = 0;
+        src.y = 0;
+        src.w = rect.w;
+        src.h = rect.h;
+        SDL_RenderCopy(renderer, sb->options_texture, &src, &rect);
     }
 }

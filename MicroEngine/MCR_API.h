@@ -41,7 +41,6 @@ void MCR_push_collision_object(Rect rect);
 /*
  * UI
  */
-#include "micro_ui_manager.h"
 ImEx
 void MCR_push_ui_button(Rect position, char *id, char *text);
 ImEx

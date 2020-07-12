@@ -1,4 +1,5 @@
 #include "micro_engine.h"
+#include "micro_ui_manager.h"
 
 
 typedef struct EditState {
@@ -51,7 +52,15 @@ void init_editor(State *game_state)
     element_pos.w = 150;
     SelectBox *select = create_selectbox(element_pos, "collision_objects", 4);
     select->container = container;
-    add_selectbox_element(select, "rock", "Rock", 1);
+    add_selectbox_element(select, "rock", "Rock", 0);
+    add_selectbox_element(select, "table", "Table", 1);
+    add_selectbox_element(select, "bush", "Bush", 0);
+    add_selectbox_element(select, "furry_dog", "Furry Dog", 0);
+    add_selectbox_element(select, "cosmic_lamp", "Cosmic Lamp", 0);
+    add_selectbox_element(select, "aspen", "Aspen Tree", 0);
+    // TODO: Maybe tie this into add_selectbox_element somehow so it automatically
+    // regenerates the image instead of needing to remember to do it manually.
+    generate_options_image(_game_state->renderer, select);
 }
 
 

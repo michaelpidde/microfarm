@@ -2,6 +2,7 @@
 
 #include "constants.h"
 #include "../../Common/types.h"
+#include <SDL.h>
 
 typedef enum ElementState {
     Off, Hover, Click
@@ -33,6 +34,7 @@ typedef struct SelectBox {
     int visible_elements;
     char id[KEY_LENGTH];
     DragContainer *container;
+    SDL_Texture *options_texture;
     int showing;
 } SelectBox;
 

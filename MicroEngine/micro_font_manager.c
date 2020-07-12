@@ -112,6 +112,12 @@ int get_word_width(char *word)
 }
 
 
+int font_height()
+{
+	return *_selected_font->font_size + *_selected_font->leading;
+}
+
+
 void set_font(char *font)
 {
 	int index = 0;
