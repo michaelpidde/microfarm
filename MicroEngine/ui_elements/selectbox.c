@@ -20,7 +20,7 @@ SelectBox _create_selectbox(Rect position, char *id, int visible_elements)
     SelectBox sb;
     strcpy(sb.id, id);
     sb.position = position;
-    sb.element_selected = 0;
+    sb.element_selected = -1;
     sb.showing = 1;
     sb.scroll_amount = 0;
     sb.visible_elements = visible_elements;
@@ -97,6 +97,20 @@ void generate_options_image(SDL_Renderer *renderer, SelectBox *sb)
 }
 
 
+void select_option_under_mouse(SelectBox *sb, int sb_height, int relative_y)
+{
+    int topmost_visible_option_index = sb->scroll_amount / font_height();
+    int selected_option = topmost_visible_option_index;
+    for(int bottom = 0; bottom < sb_height; bottom += font_height()) {
+        if(relative_y >= bottom && relative_y < bottom + font_height()) {
+            break;
+        }
+        ++selected_option;
+    }
+    sb->element_selected = selected_option;
+}
+
+
 void render_selectbox(SDL_Renderer *renderer, SelectBox *sb)
 {
     if(sb->showing) {
@@ -133,8 +147,9 @@ void render_selectbox(SDL_Renderer *renderer, SelectBox *sb)
         SDL_RenderFillRect(renderer, &rect);
 
         // Body
+        int element_start_y = real_y + sb->position.y + sb->style.border_size;
         rect.x = real_x + sb->position.x + sb->style.border_size;
-        rect.y = real_y + sb->position.y + sb->style.border_size;
+        rect.y = element_start_y;
         rect.w = max_width - (sb->style.border_size * 2);
         rect.h = max_height - (sb->style.border_size * 2);
         RGBColor *state_color = &sb->style.base_color;
@@ -165,5 +180,22 @@ void render_selectbox(SDL_Renderer *renderer, SelectBox *sb)
             src.h = rect.h;
         }
         SDL_RenderCopy(renderer, sb->options_texture, &src, &rect);
+
+        // Selection highlight
+        int topmost_visible_option_index = sb->scroll_amount / font_height();
+        if(sb->element_selected >= 0 && 
+            sb->element_selected >= topmost_visible_option_index && 
+            sb->element_selected < topmost_visible_option_index + 4) 
+        {
+            SDL_Rect highlight;
+            highlight.x = rect.x;
+            highlight.y = element_start_y + (sb->element_selected - topmost_visible_option_index) * font_height();
+            highlight.w = rect.w;
+            highlight.h = font_height();
+            SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 35);
+            SDL_RenderFillRect(renderer, &highlight);
+            SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
+        }
     }
 }

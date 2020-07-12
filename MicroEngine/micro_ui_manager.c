@@ -222,7 +222,10 @@ void update_ui(State *gamestate)
             int real_y = sb->position.y;
             if(sb->container) {
                 real_x = sb->container->position.x + sb->container->style.padding + sb->position.x;
-                real_y = sb->container->position.y + sb->container->style.padding + sb->position.y;
+                real_y = sb->container->position.y + 
+                    get_drag_bar_position(sb->container).h + 
+                    sb->container->style.padding + 
+                    sb->position.y;
             }
 
             int left = real_x;
@@ -236,9 +239,13 @@ void update_ui(State *gamestate)
             {
                 if(gamestate->controls.mouse_left == 1) {
                     sb->state = Click;
-                    if(sb->callback && !sb->doing_callback) {
+                    if(!sb->doing_callback) {
                         sb->doing_callback = 1;
-                        sb->callback();
+                        select_option_under_mouse(sb, max_height, mouse_y - real_y);
+
+                        if(sb->callback) {
+                            sb->callback();
+                        }
                     }
                 } else if(gamestate->controls.mouse_scroll != 0) {
                     if(sb->element_ctr > sb->visible_elements) {
