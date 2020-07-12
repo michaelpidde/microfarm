@@ -157,7 +157,13 @@ void render_selectbox(SDL_Renderer *renderer, SelectBox *sb)
         src.x = 0;
         src.y = sb->scroll_amount;
         src.w = rect.w;
-        src.h = rect.h;
+        if(sb->element_ctr < sb->visible_elements) {
+            // Constrain the source and destination rectangle height so we don't get image distortion.
+            src.h = sb->element_ctr * font_height();
+            rect.h = src.h;
+        } else {
+            src.h = rect.h;
+        }
         SDL_RenderCopy(renderer, sb->options_texture, &src, &rect);
     }
 }

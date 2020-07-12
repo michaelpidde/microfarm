@@ -118,6 +118,12 @@ int font_height()
 }
 
 
+int font_leading()
+{
+	return *_selected_font->leading;
+}
+
+
 void set_font(char *font)
 {
 	int index = 0;

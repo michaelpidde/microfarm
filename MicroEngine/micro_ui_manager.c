@@ -241,16 +241,20 @@ void update_ui(State *gamestate)
                         sb->callback();
                     }
                 } else if(gamestate->controls.mouse_scroll != 0) {
-                    // This will scroll the select box by one option element.
-                    int next = sb->scroll_amount - (gamestate->controls.mouse_scroll * font_height());
-                    int max_scroll_amount = sb->options_texture_h - max_height;
-                    if(next < 0) {
-                        next = 0;
+                    if(sb->element_ctr > sb->visible_elements) {
+                        // This will scroll the select box by one option element.
+                        int next = sb->scroll_amount - (gamestate->controls.mouse_scroll * font_height());
+                        int max_scroll_amount = sb->options_texture_h - max_height;
+                        // Make sure we don't overflow.
+                        if(next < 0) {
+                            next = 0;
+                        }
+                        if(next > max_scroll_amount) {
+                            // Set scroll to max while retaining proper line positioning.
+                            next = max_scroll_amount + font_leading();
+                        }
+                        sb->scroll_amount = next;
                     }
-                    if(next > max_scroll_amount) {
-                        next = max_scroll_amount;
-                    }
-                    sb->scroll_amount = next;
                 } else {
                     sb->state = Hover;
                     sb->doing_callback = 0;
