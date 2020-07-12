@@ -33,6 +33,7 @@ typedef struct SpriteBatch {
 typedef struct Controls {
     int mouse_left;
     int mouse_right;
+    int mouse_scroll;
 } Controls;
 
 #define TOTAL_OBJECTS 100

@@ -22,8 +22,10 @@ SelectBox _create_selectbox(Rect position, char *id, int visible_elements)
     sb.position = position;
     sb.element_selected = 0;
     sb.showing = 1;
+    sb.scroll_amount = 0;
     sb.visible_elements = visible_elements;
     sb.style = get_default_selectbox_style();
+    sb.callback = NULL;
     return sb;
 }
 
@@ -87,6 +89,8 @@ void generate_options_image(SDL_Renderer *renderer, SelectBox *sb)
         y += font_height();
     }
     sb->options_texture = texture;
+    sb->options_texture_h = h;
+    sb->options_texture_w = w;
 
     // Reset renderer to default target.
     SDL_SetRenderTarget(renderer, NULL);
@@ -151,7 +155,7 @@ void render_selectbox(SDL_Renderer *renderer, SelectBox *sb)
 
         SDL_Rect src;
         src.x = 0;
-        src.y = 0;
+        src.y = sb->scroll_amount;
         src.w = rect.w;
         src.h = rect.h;
         SDL_RenderCopy(renderer, sb->options_texture, &src, &rect);

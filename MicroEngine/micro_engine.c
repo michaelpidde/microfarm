@@ -277,6 +277,10 @@ void handle_events(
                     _state.controls.mouse_left = 0;
                 }
             } break;
+            case SDL_MOUSEWHEEL: {
+                // TODO: I guess account for flipped or normal, but I don't care right now.
+                _state.controls.mouse_scroll = event.wheel.y;
+            } break;
         }
     }
 }

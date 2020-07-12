@@ -5,7 +5,7 @@
 #include <SDL.h>
 
 typedef enum ElementState {
-    Off, Hover, Click
+    Off, Hover, Click, MouseWheel
 } ElementState;
 
 typedef struct ElementStyle {
@@ -27,6 +27,7 @@ typedef struct DragContainer {
 typedef struct SelectBox {
     Rect position;
     ElementStyle style;
+    ElementState state;
     char keys[MAX_SELECT_OPTIONS][KEY_LENGTH];
     char values[MAX_SELECT_OPTIONS][KEY_LENGTH];
     int element_ctr;
@@ -35,7 +36,12 @@ typedef struct SelectBox {
     char id[KEY_LENGTH];
     DragContainer *container;
     SDL_Texture *options_texture;
+    int options_texture_w;
+    int options_texture_h;
     int showing;
+    int doing_callback;
+    int scroll_amount;
+    void (*callback)();
 } SelectBox;
 
 /**

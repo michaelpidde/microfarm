@@ -205,7 +205,66 @@ void update_ui(State *gamestate)
         }
     }
 
+    /*
+     * Select Boxes
+     */
+    for(int i = 0; i < MAX_SELECT_ELEMENTS; ++i) {
+        SelectBox *sb = &_ui_state.selectboxes[i];
+        if(sb->showing) {
+            // Set font before we start doing calculations on its size.
+            set_font(sb->style.font_key);
+
+            int max_width, max_height;
+            get_selectbox_dimensions(sb, &max_width, &max_height);
+
+            // Real X and Y account for relative positioning inside of a container.
+            int real_x = sb->position.x;
+            int real_y = sb->position.y;
+            if(sb->container) {
+                real_x = sb->container->position.x + sb->container->style.padding + sb->position.x;
+                real_y = sb->container->position.y + sb->container->style.padding + sb->position.y;
+            }
+
+            int left = real_x;
+            int right = real_x + max_width;
+            int top = real_y;
+            int bottom = real_y + max_height;
+            if(mouse_x >= left &&
+                mouse_x <= right &&
+                mouse_y >= top &&
+                mouse_y <= bottom)
+            {
+                if(gamestate->controls.mouse_left == 1) {
+                    sb->state = Click;
+                    if(sb->callback && !sb->doing_callback) {
+                        sb->doing_callback = 1;
+                        sb->callback();
+                    }
+                } else if(gamestate->controls.mouse_scroll != 0) {
+                    // This will scroll the select box by one option element.
+                    int next = sb->scroll_amount - (gamestate->controls.mouse_scroll * font_height());
+                    int max_scroll_amount = sb->options_texture_h - max_height;
+                    if(next < 0) {
+                        next = 0;
+                    }
+                    if(next > max_scroll_amount) {
+                        next = max_scroll_amount;
+                    }
+                    sb->scroll_amount = next;
+                } else {
+                    sb->state = Hover;
+                    sb->doing_callback = 0;
+                }
+            } else {
+                sb->state = Off;
+            }
+        }
+    }
+
     // Save these to calculate drag.
     _ui_state.last_mouse_x = mouse_x;
     _ui_state.last_mouse_y = mouse_y;
+
+    // Reset mouse scroll because this won't stop scrolling until we do this manually.
+    gamestate->controls.mouse_scroll = 0;
 }
