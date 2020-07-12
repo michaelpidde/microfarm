@@ -97,7 +97,7 @@ void generate_options_image(SDL_Renderer *renderer, SelectBox *sb)
 }
 
 
-void select_option_under_mouse(SelectBox *sb, int sb_height, int relative_y)
+void select_option_under_mouse(SelectBox *sb, int sb_height, int relative_y, int ctrl)
 {
     int topmost_visible_option_index = sb->scroll_amount / font_height();
     int selected_option = topmost_visible_option_index;
@@ -107,7 +107,11 @@ void select_option_under_mouse(SelectBox *sb, int sb_height, int relative_y)
         }
         ++selected_option;
     }
-    sb->element_selected = selected_option;
+    if(sb->element_selected == selected_option && ctrl) {
+        sb->element_selected = -1;
+    } else {
+        sb->element_selected = selected_option;
+    }
 }
 
 

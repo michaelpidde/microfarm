@@ -34,6 +34,7 @@ typedef struct Controls {
     int mouse_left;
     int mouse_right;
     int mouse_scroll;
+    int ctrl;
 } Controls;
 
 #define TOTAL_OBJECTS 100

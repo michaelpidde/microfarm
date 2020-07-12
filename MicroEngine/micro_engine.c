@@ -235,6 +235,13 @@ void handle_events(
                 _state.running = 0;
             } break;
             case SDL_KEYUP: {
+                switch(event.key.keysym.sym) {
+                    case SDLK_LCTRL:
+                    case SDLK_RCTRL: {
+                        _state.controls.ctrl = 0;
+                    } break;
+                }
+
                 keyboard_callback(event.key.keysym.sym, 0);
             } break;
             case SDL_KEYDOWN: {
@@ -247,6 +254,10 @@ void handle_events(
                         }
                     } break;
                     #endif
+                    case SDLK_LCTRL:
+                    case SDLK_RCTRL: {
+                        _state.controls.ctrl = 1;
+                    } break;
                 }
 
                 keyboard_callback(event.key.keysym.sym, 1);

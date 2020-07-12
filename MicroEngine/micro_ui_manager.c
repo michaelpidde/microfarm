@@ -241,7 +241,7 @@ void update_ui(State *gamestate)
                     sb->state = Click;
                     if(!sb->doing_callback) {
                         sb->doing_callback = 1;
-                        select_option_under_mouse(sb, max_height, mouse_y - real_y);
+                        select_option_under_mouse(sb, max_height, mouse_y - real_y, gamestate->controls.ctrl);
 
                         if(sb->callback) {
                             sb->callback();
