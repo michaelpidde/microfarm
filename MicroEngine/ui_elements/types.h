@@ -22,6 +22,9 @@ typedef struct DragContainer {
     ElementState dragbar_state;
     char id[KEY_LENGTH];
     int showing;
+    int close_button;
+    int dragging;
+    void (*close_callback)();
 } DragContainer;
 
 typedef struct SelectBox {

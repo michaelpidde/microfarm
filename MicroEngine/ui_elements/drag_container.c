@@ -21,8 +21,11 @@ DragContainer _create_container(Rect position, char *id)
     dc.style = get_default_container_style();
     dc.position = position;
     dc.showing = 1;
+    dc.close_button = 1;
+    dc.dragging = 0;
     dc.dragbar_state = Off;
     strcpy(dc.id, id);
+    dc.close_callback = NULL;
     return dc;
 }
 
@@ -35,6 +38,18 @@ Rect get_drag_bar_position(DragContainer *container)
     dimensions.h = DRAG_BAR_HEIGHT;
     dimensions.w = container->position.w - (container->style.border_size * 2);
     return dimensions;
+}
+
+
+Rect get_close_button_position(DragContainer *container)
+{
+    Rect container_dimensions = get_drag_bar_position(container);
+    Rect position;
+    SDL_Texture *texture = get_asset("res_icon_close");
+    SDL_QueryTexture(texture, NULL, NULL, &position.w, &position.h);
+    position.x = container_dimensions.x + container_dimensions.w - position.w - 2;
+    position.y = container_dimensions.y + 2;
+    return position;
 }
 
 
@@ -78,5 +93,11 @@ void render_container(SDL_Renderer *renderer, DragContainer *container)
         src.w = w;
         src.h = h;
         SDL_RenderCopy(renderer, texture, &src, &rect);
+
+        // Close button
+        if(container->close_button) {
+            SDL_Rect dest = to_SDL_Rect(get_close_button_position(container));
+            SDL_RenderCopy(renderer, get_asset("res_icon_close"), &src, &dest);
+        }
     }
 }

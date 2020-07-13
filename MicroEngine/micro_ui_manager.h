@@ -15,6 +15,7 @@ typedef struct UI_State {
     RenderStyle render_style;
     uint32 last_mouse_x;
     uint32 last_mouse_y;
+    int dragging;
 } UI_State;
 
 Button *create_button(Rect position, char *id, char *text);

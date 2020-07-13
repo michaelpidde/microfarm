@@ -12,6 +12,7 @@ UI_State _ui_state;
 void init_UI()
 {
     _ui_state.render_style = Adaptive;
+    _ui_state.dragging = 0;
 }
 
 
@@ -140,16 +141,48 @@ void update_ui(State *gamestate)
                 mouse_y <= bottom)
             ) {
                 if(gamestate->controls.mouse_left == 1) {
-                    container->dragbar_state = Click;
-                    int move_x = _ui_state.last_mouse_x - mouse_x;
-                    int move_y = _ui_state.last_mouse_y - mouse_y;
-                    // move_x and move_y will be positive for up/left movement and negative for down/right movement. Ex:
-                    // x = 100. Move left 5 pixels. x = 100 - 5.
-                    // x = 100. Move right 5 pixels. x = 100 - (-5).
-                    container->position.x -= move_x;
-                    container->position.y -= move_y;
+                    // Check if we're clicking on the close button.
+                    // TODO: Make this into a real button element that handles its own close function to toggle
+                    // container visibility.
+                    if(container->close_button) {
+                        Rect close_position = get_close_button_position(container);
+                        if(mouse_x >= close_position.x &&
+                            mouse_x <= close_position.x + close_position.w &&
+                            mouse_y >= close_position.y &&
+                            mouse_y <= close_position.y + close_position.h)
+                        {
+                            if(container->close_callback) {
+                                container->close_callback();
+                                break;
+                            } else {
+                                debug_string_simple("No close callback defined.\n", LightCyan);
+                            }
+                        }
+                    }
+
+                    // Make sure we can only drag one container at a time.
+                    if(!_ui_state.dragging) {
+                        _ui_state.dragging = 1;
+                        container->dragging = 1;
+                    }
+
+                    if(_ui_state.dragging && container->dragging) {
+                        container->dragbar_state = Click;
+                        int move_x = _ui_state.last_mouse_x - mouse_x;
+                        int move_y = _ui_state.last_mouse_y - mouse_y;
+                        // move_x and move_y will be positive for up/left movement and negative for down/right movement. Ex:
+                        // x = 100. Move left 5 pixels. x = 100 - 5.
+                        // x = 100. Move right 5 pixels. x = 100 - (-5).
+                        container->position.x -= move_x;
+                        container->position.y -= move_y;
+                        break;
+                    }
                 } else {
-                    container->dragbar_state = Hover;
+                    if(container->dragging) {
+                        _ui_state.dragging = 0;
+                        container->dragging = 0;
+                        container->dragbar_state = Hover;
+                    }
                 }
             } else {
                 container->dragbar_state = Off;
@@ -189,15 +222,18 @@ void update_ui(State *gamestate)
                 mouse_y >= top &&
                 mouse_y <= bottom)
             {
-                if(gamestate->controls.mouse_left == 1) {
-                    button->state = Click;
-                    if(button->callback && !button->doing_callback) {
-                        button->doing_callback = 1;
-                        button->callback();
+                // Don't interact with a button if we're dragging a container on top of it.
+                if(!_ui_state.dragging) {
+                    if(gamestate->controls.mouse_left == 1) {
+                        button->state = Click;
+                        if(button->callback && !button->doing_callback) {
+                            button->doing_callback = 1;
+                            button->callback();
+                        }
+                    } else {
+                        button->state = Hover;
+                        button->doing_callback = 0;
                     }
-                } else {
-                    button->state = Hover;
-                    button->doing_callback = 0;
                 }
             } else {
                 button->state = Off;

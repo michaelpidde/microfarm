@@ -1,32 +1,56 @@
 #include "micro_engine.h"
 #include "micro_ui_manager.h"
 
+// Forward declare because I don't want to make a header because this is the only file consuming these functions...
+void toggle_paint_tools(int showing);
+void toggle_editor(int showing);
+
 
 typedef struct EditState {
     int show_collision;
+    int show_paint_tools;
 } EditState;
 
 EditState _edit_state;
 State *_game_state;
 
 
-void toggle_collision_bounding_boxes()
+void click_collision()
 {
     _edit_state.show_collision = !_edit_state.show_collision;
 }
 
 
-void init_editor(State *game_state)
+void click_paint()
 {
-    _game_state = game_state;
-    load_asset_class(game_state->renderer, "res\\icons", "res_icon");
+    _edit_state.show_paint_tools = !_edit_state.show_paint_tools;
+    toggle_paint_tools(_edit_state.show_paint_tools);
+}
 
+
+void main_container_close()
+{
+    _game_state->edit_mode = 0;
+    toggle_editor(0);
+}
+
+
+void paint_container_close()
+{
+    _edit_state.show_paint_tools = 0;
+    toggle_paint_tools(0);
+}
+
+
+void init_main_container()
+{
     Rect container_pos;
     container_pos.x = 10;
     container_pos.y = 10;
     container_pos.w = 200;
     container_pos.h = 500;
-    DragContainer *container = create_container(container_pos, "toolbar");
+    DragContainer *container = create_container(container_pos, "main");
+    container->close_callback = &main_container_close;
 
     int width, height;
     Rect element_pos;
@@ -34,7 +58,7 @@ void init_editor(State *game_state)
     element_pos.y = container_pos.y;
     Button *button = create_button(element_pos, "collision", "Collision");
     button->container = container;
-    register_button_callback(button, &toggle_collision_bounding_boxes);
+    register_button_callback(button, &click_collision);
 
     get_button_dimensions(button, &width, &height);
     element_pos.x += width + 10;
@@ -45,6 +69,7 @@ void init_editor(State *game_state)
     element_pos.x += width + 10;
     button = create_button(element_pos, "paint", "Paint");
     button->container = container;
+    register_button_callback(button, &click_paint);
 
     get_button_dimensions(button, &width, &height);
     element_pos.x = container_pos.x;
@@ -64,9 +89,43 @@ void init_editor(State *game_state)
 }
 
 
-void toggle_editor(int showing)
+void init_paint_tools(int showing)
 {
-    DragContainer *dc = get_container("toolbar");
+    DragContainer *main_container = get_container("main");
+    Rect container_pos;
+    container_pos.x = main_container->position.x + main_container->position.w + 10;
+    container_pos.y = main_container->position.y;
+    container_pos.w = 500;
+    container_pos.h = 500;
+    DragContainer *container = create_container(container_pos, "paint_tools");
+    container->close_callback = &paint_container_close;
+
+    toggle_paint_tools(showing);
+}
+
+
+void init_editor(State *game_state)
+{
+    _game_state = game_state;
+    load_asset_class(game_state->renderer, "res\\icons", "res_icon");
+
+    init_main_container();
+    init_paint_tools(0);
+}
+
+
+void toggle_paint_tools(int showing)
+{
+    DragContainer *dc = get_container("paint_tools");
+    if(dc) {
+        dc->showing = showing;
+    }
+}
+
+
+void toggle_main_container(int showing)
+{
+    DragContainer *dc = get_container("main");
     if(dc) {
         dc->showing = showing;
     }
@@ -85,6 +144,16 @@ void toggle_editor(int showing)
     SelectBox *sb = get_selectbox("collision_objects");
     if(sb) {
         sb->showing = showing;
+    }
+}
+
+
+void toggle_editor(int show)
+{
+    toggle_main_container(show);
+    if(!show) {
+        _edit_state.show_paint_tools = 0;
+        toggle_paint_tools(0);
     }
 }
 
