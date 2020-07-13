@@ -15,6 +15,9 @@ EditState _edit_state;
 State *_game_state;
 
 
+/*******************************************************************************
+ * CALLBACKS
+ ******************************************************************************/
 void click_collision()
 {
     _edit_state.show_collision = !_edit_state.show_collision;
@@ -42,6 +45,9 @@ void paint_container_close()
 }
 
 
+/*******************************************************************************
+ * INITIALIZERS
+ ******************************************************************************/
 void init_main_container()
 {
     Rect container_pos;
@@ -123,6 +129,9 @@ void toggle_paint_tools(int showing)
 }
 
 
+/*******************************************************************************
+ * TOGGLES
+ ******************************************************************************/
 void toggle_main_container(int showing)
 {
     DragContainer *dc = get_container("main");
@@ -158,6 +167,9 @@ void toggle_editor(int show)
 }
 
 
+/*******************************************************************************
+ * RENDERERS
+ ******************************************************************************/
 void render_edit_mode()
 {
     if(_edit_state.show_collision) {
