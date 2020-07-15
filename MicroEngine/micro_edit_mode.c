@@ -9,6 +9,7 @@ void toggle_editor(int showing);
 typedef struct EditState {
     int show_collision;
     int show_paint_tools;
+    char palette_asset[KEY_LENGTH];
 } EditState;
 
 EditState _edit_state;
@@ -95,8 +96,10 @@ void init_main_container()
 }
 
 
-void init_paint_tools(int showing)
+void init_paint_tools()
 {
+    // TileGrid *tilegrid = create_tilegrid("palette", _edit_state.palette_asset);
+    
     DragContainer *main_container = get_container("main");
     Rect container_pos;
     container_pos.x = main_container->position.x + main_container->position.w + 10;
@@ -106,7 +109,7 @@ void init_paint_tools(int showing)
     DragContainer *container = create_container(container_pos, "paint_tools");
     container->close_callback = &paint_container_close;
 
-    toggle_paint_tools(showing);
+    toggle_paint_tools(0);
 }
 
 
@@ -116,7 +119,7 @@ void init_editor(State *game_state)
     load_asset_class(game_state->renderer, "res\\icons", "res_icon");
 
     init_main_container();
-    init_paint_tools(0);
+    init_paint_tools();
 }
 
 
@@ -179,4 +182,13 @@ void render_edit_mode()
             MCR_draw_rect(_game_state->collision_objects.rects[i], outline);
         }
     }
+}
+
+
+/*******************************************************************************
+ * ETCETERA
+ ******************************************************************************/
+void register_palette(char *key)
+{
+    strcpy(_edit_state.palette_asset, key);
 }

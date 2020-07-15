@@ -128,8 +128,9 @@ int main()
     MCR_init("Micro Farm");
     MCR_set_tile_size(TILE_SIZE);
 
-    int loaded = MCR_load_asset_class("assets\\actor", "actor");
-    loaded = MCR_load_asset_class("assets\\world", "world");
+    MCR_load_asset_class("assets\\actor", "actor");
+    MCR_load_asset_class("assets\\world", "world");
+    MCR_register_palette("world_terrain");
     // loaded = MCR_load_asset_class("assets\\icons", "icon");
     // printf("Assets loaded from icon: %d\n", loaded);
 

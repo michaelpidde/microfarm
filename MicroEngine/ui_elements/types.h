@@ -47,6 +47,11 @@ typedef struct SelectBox {
     void (*callback)();
 } SelectBox;
 
+typedef struct TileGrid {
+    Rect position;
+    
+} TileGrid;
+
 /**
  * Adaptive: Uses element width and height as starting values but will expand to
  * accommodate inner content size.

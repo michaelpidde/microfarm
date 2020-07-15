@@ -74,10 +74,6 @@ void MCR_init(char *title)
     init_asset_manager(_state.renderer);
     init_font(_state.renderer);
     init_UI();
-    #if DEBUG
-        init_editor(&_state);
-        toggle_editor(_state.edit_mode);
-    #endif
     _state.spritebatch.ctr = 0;
     _state.tile_size = DEFAULT_TILE_SIZE;
 }
@@ -92,6 +88,13 @@ void MCR_set_tile_size(int size)
 int MCR_load_asset_class(char *dir, char *prefix)
 {
     return load_asset_class(_state.renderer, dir, prefix);
+}
+
+
+void MCR_register_palette(char *key)
+{
+    printf("KEY: %s\n", key);
+    register_palette(key);
 }
 
 
@@ -317,6 +320,13 @@ void MCR_run(
     void (*mouse_callback)(uint32 button, uint32 x, uint32 y, uint32 down)) 
 {
     _state.running = 1;
+
+    #if DEBUG
+        // Moved out of MCR_init.
+        // Make sure we're called into before doing this since it relies on game assets.
+        init_editor(&_state);
+        toggle_editor(_state.edit_mode);
+    #endif
 
     SDL_Event event;
     // TODO: This is a really horrible game loop. Fix it.

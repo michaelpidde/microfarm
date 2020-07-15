@@ -18,6 +18,8 @@ void MCR_set_tile_size(int size);
 ImEx
 int MCR_load_asset_class(char *dir, char *prefix);
 ImEx
+void MCR_register_palette(char *key);
+ImEx
 void MCR_run(
     void (*update_callback)(), 
     void (*render_callback)(),
